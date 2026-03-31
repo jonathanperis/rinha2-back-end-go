@@ -148,6 +148,8 @@ section + section { border-top: 1px solid var(--border); }
 .reports-loading .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid var(--border); border-top-color: #00ADD8; border-radius: 50%; animation: spin 0.7s linear infinite; margin-right: 0.5rem; vertical-align: middle; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
+.older-reports-toggle { margin-top: 1rem; width: 100%; text-align: center; font-family: var(--mono); font-size: 0.8125rem; cursor: pointer; }
+
 .site-footer { margin-top: auto; border-top: 1px solid var(--border); padding: 2rem 0; }
 .footer-inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
 .footer-text { font-size: 0.8125rem; color: var(--text-muted); }
