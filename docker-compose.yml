@@ -3,7 +3,7 @@ name: 'rinha2-back-end-go'
 services:
 
   webapi1-go: &webapi1
-    # image: jonathanperis/rinha2-back-end-go:latest
+    # image: ghcr.io/jonathanperis/rinha2-back-end-go:latest
     build:
       context: ./src/WebApi
       dockerfile: Dockerfile    
@@ -119,7 +119,7 @@ services:
       - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=EEKpryGZk8pVDXmIuy484BKUxM5jOEDv7YNoeNZUbsNbpbPbP6kK_qY9Zsyw7zNnlZ7pHG16FYzNaqwLMBUz8g==
 
   k6:
-    image: jonathanperis/rinha2-back-end-k6:latest
+    image: ghcr.io/jonathanperis/rinha2-back-end-k6:latest
     container_name: k6-rinha
     environment:
       # Set MODE=dev to export data via xk6-influxdb, or MODE=prod to generate an HTML report.
