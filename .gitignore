@@ -29,3 +29,8 @@ rinha2-back-end-go
 
 # OSX Feelings
 *.DS_Store
+
+# Docs generation
+wiki/
+node_modules/
+package-lock.json
