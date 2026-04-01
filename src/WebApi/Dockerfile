@@ -15,7 +15,7 @@ COPY . .
 RUN go build -ldflags="-s -w" -o rinha2-back-end-go .
 
 # Final stage: use a minimal image
-FROM alpine:3.21
+FROM alpine:3.23
 
 WORKDIR /app
 # Copy the binary from the builder stage
