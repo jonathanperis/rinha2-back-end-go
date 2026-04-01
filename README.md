@@ -1,63 +1,69 @@
 # rinha2-back-end-go
 
-High-performance backend implementation for the **Rinha de Backend** challenge (2nd Edition, 2024/Q1) — built with **Go**, **PostgreSQL**, and **Nginx**.
+> Go 1.23 implementation for the Rinha de Backend 2024/Q1 challenge with chi router, pgx driver, and PostgreSQL stored procedures
 
-**Live results:** [jonathanperis.github.io/rinha2-back-end-go](https://jonathanperis.github.io/rinha2-back-end-go/)
+[![CI](https://github.com/jonathanperis/rinha2-back-end-go/actions/workflows/build-check-webapi.yml/badge.svg)](https://github.com/jonathanperis/rinha2-back-end-go/actions/workflows/build-check-webapi.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ---
 
 ## About
 
-A Go implementation of the Brazilian backend programming challenge that pushes API performance to the limit under strict resource constraints. The API manages fictional bank clients with credit/debit transactions and balance statements.
-
-### Endpoints
-
-- `POST /clientes/{id}/transacoes` — Create a transaction (credit or debit)
-- `GET /clientes/{id}/extrato` — Get client balance and recent transactions
-
-### Results
-
-All requests completed under 800ms using only **250MB of RAM** — 60% less than the challenge allows.
+A Go implementation of the Brazilian backend challenge Rinha de Backend 2024/Q1, where a fictional bank API must handle concurrent transactions under strict resource constraints (1.5 CPU, 550MB RAM total). Built as a minimal single-file API (~190 lines) using chi/v5 for routing and pgx/v5 for PostgreSQL access, with business logic in stored procedures. Built for learning purposes.
 
 ## Tech Stack
 
-| Technology | Purpose |
-|---|---|
-| Go 1.23 | API implementation |
-| chi/v5 | HTTP router |
-| pgx/v5 | PostgreSQL driver with connection pool |
-| PostgreSQL | Database with stored procedures |
-| Nginx | Reverse proxy / load balancer |
-| Docker | Multi-stage build and orchestration |
-| Prometheus + Grafana | Observability |
-| k6 | Stress testing |
+| Technology | Version | Purpose |
+|-----------|---------|---------|
+| Go | 1.23 | API implementation |
+| chi | v5 | HTTP router |
+| pgx | v5 | PostgreSQL driver with connection pool |
+| PostgreSQL | - | Database with stored procedures |
+| Nginx | - | Reverse proxy and load balancer (least-conn) |
+| Docker | - | Multi-stage build and orchestration |
+| k6 | - | Stress testing |
 
-## Architecture
+## Features
 
-- **2 Go API instances** behind Nginx (0.4 CPU, 100MB RAM each)
-- **1 PostgreSQL** database (0.5 CPU, 330MB RAM)
-- **1 Nginx** load balancer (0.2 CPU, 20MB RAM)
-- Business logic pushed into PostgreSQL stored procedures
-- Minimal single-file Go API (~190 lines)
+- Minimal single-file API implementation (~190 lines of Go)
+- Idiomatic Go with chi/v5 router and pgx/v5 driver
+- PostgreSQL stored procedures for server-side business logic
+- PostgreSQL tuned with synchronous_commit=0, fsync=0, full_page_writes=0
+- All requests under 800ms at 250MB RAM usage (60% below limit)
 
 ## Getting Started
 
+### Prerequisites
+
+- Docker with Docker Compose
+
+### Quick Start
+
 ```bash
+git clone https://github.com/jonathanperis/rinha2-back-end-go.git
+cd rinha2-back-end-go
 docker compose up nginx -d --build
 ```
 
-The API will be available at `http://localhost:9999`.
+API available at `http://localhost:9999`
 
-## Stress Tests
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/clientes/{id}/transacoes` | POST | Submit debit or credit transaction |
+| `/clientes/{id}/extrato` | GET | Get account balance statement |
 
-- [rinha2-back-end-k6](https://github.com/jonathanperis/rinha2-back-end-k6) — Grafana k6 stress test suite used across all implementations
+## Project Structure
 
-## Other Implementations
+```
+rinha2-back-end-go/
+├── src/WebApi/         — API implementation
+├── docker-compose.yml  — Full stack: API x2, Nginx, PostgreSQL, k6, observability
+└── .github/workflows/  — CI/CD pipelines
+```
 
-- [rinha2-back-end-dotnet](https://github.com/jonathanperis/rinha2-back-end-dotnet) — C# / .NET ![Perfect Score](https://img.shields.io/badge/⭐_Perfect_Score-gold?style=flat-square)
-- [rinha2-back-end-rust](https://github.com/jonathanperis/rinha2-back-end-rust) — Rust ![Learning Purposes](https://img.shields.io/badge/📚_Learning_Purposes-blue?style=flat-square)
-- [rinha2-back-end-python](https://github.com/jonathanperis/rinha2-back-end-python) — Python ![Learning Purposes](https://img.shields.io/badge/📚_Learning_Purposes-blue?style=flat-square)
+## CI/CD
+
+Two GitHub Actions workflows: `build-check-webapi.yml` runs on pull requests to build and health-check the API, and `main-release-webapi.yml` runs on the main branch to build a multi-platform Docker image and push it to GHCR.
 
 ## License
 
-Licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
+MIT — see [LICENSE](LICENSE)
