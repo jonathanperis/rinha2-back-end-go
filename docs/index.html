@@ -1,301 +1,281 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>rinha2-back-end-go | High Speed Performance</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;600;700&display=swap');
-        
-        :root {
-            --bg-base: #0c1f1f;
-            --bg-card: #132a2a;
-            --gopher-cyan: #00ADD8;
-            --gopher-light: #5DC9E2;
-            --text-main: #f0fdfd;
-            --text-muted: #8ebbbc;
-            --border-line: #1c4040;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Fira Code', monospace;
-            background-color: var(--bg-base);
-            color: var(--text-main);
-            line-height: 1.5;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow-x: hidden;
-        }
-
-        /* Animated Data Stream Background */
-        .data-streams {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -1;
-            pointer-events: none;
-            opacity: 0.1;
-            background: linear-gradient(90deg, var(--bg-base) 21px, transparent 1%) center, linear-gradient(var(--bg-base) 21px, transparent 1%) center, var(--gopher-light);
-            background-size: 22px 22px;
-        }
-
-        /* Nav */
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1.5rem 3rem;
-            background: var(--bg-base);
-            border-bottom: 1px solid var(--border-line);
-        }
-
-        .logo {
-            font-weight: 700;
-            color: var(--gopher-cyan);
-            font-size: 1.2rem;
-        }
-
-        .nav-links a {
-            color: var(--text-muted);
-            text-decoration: none;
-            margin-left: 2rem;
-            transition: color 0.2s;
-        }
-        
-        .nav-links a:hover {
-            color: var(--gopher-light);
-        }
-
-        /* Main */
-        main {
-            flex: 1;
-            padding: 5rem 2rem;
-            max-width: 1000px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
-        /* Hero */
-        .hero {
-            margin-bottom: 5rem;
-            position: relative;
-        }
-
-        .hero h1 {
-            font-size: 3.5rem;
-            font-weight: 700;
-            line-height: 1.1;
-            margin-bottom: 1.5rem;
-            color: #fff;
-        }
-
-        .hero h1 span {
-            color: var(--gopher-cyan);
-        }
-
-        .tagline {
-            font-size: 1.25rem;
-            color: var(--text-muted);
-            margin-bottom: 3rem;
-            max-width: 700px;
-        }
-
-        /* Badges */
-        .badges {
-            display: flex;
-            gap: 0.75rem;
-            margin-bottom: 3rem;
-            flex-wrap: wrap;
-        }
-
-        .badge {
-            padding: 0.25rem 0.75rem;
-            border-radius: 999px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-line);
-            color: var(--gopher-light);
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-
-        /* CTAs */
-        .ctas {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0.875rem 2rem;
-            text-decoration: none;
-            font-weight: 600;
-            border-radius: 4px;
-            transition: all 0.2s;
-        }
-
-        .btn-primary {
-            background: var(--gopher-cyan);
-            color: var(--bg-base);
-        }
-
-        .btn-primary:hover {
-            background: var(--gopher-light);
-            transform: translateY(-2px);
-        }
-
-        .btn-outline {
-            border: 1px solid var(--gopher-cyan);
-            color: var(--gopher-cyan);
-            background: transparent;
-        }
-
-        .btn-outline:hover {
-            background: rgba(0, 173, 216, 0.1);
-        }
-
-        /* Specs & Stats Grid */
-        .specs {
-            background: var(--bg-card);
-            border-radius: 8px;
-            padding: 3rem;
-            margin-bottom: 4rem;
-            border: 1px solid var(--border-line);
-        }
-
-        .specs h2 {
-            font-size: 1.5rem;
-            margin-bottom: 2rem;
-            color: var(--gopher-light);
-        }
-
-        .grid-3 {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem;
-        }
-
-        .spec-item {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .spec-val {
-            font-size: 2.25rem;
-            font-weight: 700;
-            color: #fff;
-            margin-bottom: 0.5rem;
-        }
-
-        .spec-label {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
-
-        .arch-list {
-            margin-top: 3rem;
-            padding-top: 2rem;
-            border-top: 1px dashed var(--border-line);
-            display: flex;
-            flex-wrap: wrap;
-            gap: 2rem;
-            color: var(--text-muted);
-            font-size: 0.95rem;
-        }
-
-        .arch-list div::before {
-            content: '✓';
-            color: var(--gopher-cyan);
-            margin-right: 0.5rem;
-        }
-
-        /* Footer */
-        footer {
-            padding: 3rem;
-            text-align: center;
-            border-top: 1px solid var(--border-line);
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
-
-        footer a {
-            color: var(--gopher-cyan);
-            text-decoration: none;
-        }
-        footer a:hover {
-            text-decoration: underline;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>rinha2-back-end-go | Jonathan Peris</title>
+  <meta name="description" content="Go/chi implementation of the Rinha de Backend competition. A learning project based on the .NET version that achieved a perfect score.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-0D89HNSJP8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-0D89HNSJP8');
+  </script>
 </head>
 <body>
 
-    <div class="data-streams"></div>
-
-    <nav>
-        <div class="logo">rinha2-go</div>
-        <div class="nav-links">
-            <a href="https://github.com/jonathanperis/rinha2-back-end-go">GitHub</a>
-            <a href="./docs/">Docs</a>
+  <header class="site-header">
+    <div class="container">
+      <div class="header-inner">
+        <div class="header-brand">
+          <span class="header-logo"><span class="prompt">~</span> rinha2-back-end-go</span>
         </div>
-    </nav>
+        <nav>
+          <ul class="header-nav">
+            <li><a href="#about">About</a></li>
+            <li><a href="#result">Result</a></li>
+            <li><a href="#stack">Stack</a></li>
+            <li><a href="#reports">Reports</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
 
-    <main>
-        <section class="hero">
-            <h1>Minimal. Flat.<br><span>Lightning Fast.</span></h1>
-            <p class="tagline">Go Implementation of Rinha de Backend 2024/Q1. Delivering extreme throughput and low latency under strict resource constraints for a fictional bank API.</p>
-            
-            <div class="badges">
-                <span class="badge">Go 1.22</span>
-                <span class="badge">Nginx</span>
-                <span class="badge">PostgreSQL</span>
-                <span class="badge">pgxpool</span>
-            </div>
+  <section class="hero">
+    <div class="container">
+      <div class="hero-badge">Learning Project &mdash; Based on .NET Implementation</div>
+      <h1>Rinha de Backend<br><span class="highlight">Go Implementation</span></h1>
+      <p class="hero-desc">
+        A Go reimplementation of the
+        <a href="https://github.com/zanfranceschi/rinha-de-backend-2024-q1" target="_blank" rel="noopener">Rinha de Backend</a>
+        competition API, built for learning purposes. Based on the
+        <a href="https://jonathanperis.github.io/rinha2-back-end-dotnet/" target="_blank" rel="noopener">.NET version</a>
+        that achieved a perfect score in the official competition.
+      </p>
+      <div class="hero-links">
+        <a href="https://github.com/jonathanperis/rinha2-back-end-go" target="_blank" rel="noopener" class="btn btn-primary">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          Source Code
+        </a>
+        <a href="#reports" class="btn">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M1.5 1.75a.75.75 0 00-1.5 0v12.5c0 .414.336.75.75.75h14.5a.75.75 0 000-1.5H1.5V1.75zm14.28 2.53a.75.75 0 00-1.06-1.06L10 7.94 7.53 5.47a.75.75 0 00-1.06 0L3.22 8.72a.75.75 0 001.06 1.06L7 7.06l2.47 2.47a.75.75 0 001.06 0l5.25-5.25z"/></svg>
+          Stress Tests
+        </a>
+        <a href="https://jonathanperis.github.io/rinha2-back-end-dotnet/" target="_blank" rel="noopener" class="btn">
+          .NET Original
+        </a>
+        <a href="https://github.com/zanfranceschi/rinha-de-backend-2024-q1/blob/main/RESULTADOS.md" target="_blank" rel="noopener" class="btn">
+          Official Results
+        </a>
+      </div>
+    </div>
+  </section>
 
-            <div class="ctas">
-                <a href="./docs/" class="btn btn-primary">View Documentation &rarr;</a>
-                <a href="https://github.com/jonathanperis/rinha2-back-end-go" class="btn btn-outline">View on GitHub &rarr;</a>
-            </div>
-        </section>
+  <section id="about">
+    <div class="container">
+      <p class="section-label">// about</p>
+      <h2 class="section-title">The Competition</h2>
+      <p class="section-text">
+        The <strong>Rinha de Backend - Segunda Edicao</strong> was a performance competition where developers built HTTP APIs
+        handling financial transactions (credits/debits) under strict resource constraints. The APIs had to manage concurrent
+        load while maintaining data consistency &mdash; all within tight CPU and memory limits enforced via Docker.
+      </p>
+      <p class="section-text">
+        Two endpoints were required: <code>POST /clientes/{id}/transacoes</code> for processing transactions and
+        <code>GET /clientes/{id}/extrato</code> for account statements. The evaluation criteria were brutal:
+        98% of responses under 250ms and zero balance inconsistencies.
+      </p>
+      <div class="origin-card">
+        <span class="origin-icon">&#128218;</span>
+        <div class="origin-text">
+          This implementation is based on the
+          <a href="https://jonathanperis.github.io/rinha2-back-end-dotnet/" target="_blank" rel="noopener">rinha2-back-end-dotnet</a>
+          project, which achieved a <strong>perfect score (USD 100,000, zero penalties)</strong> in the official competition.
+          This Go version was built afterward as a learning exercise to explore Go's concurrency model,
+          chi router, and pgx database driver.
+        </div>
+      </div>
 
-        <section class="specs">
-            <h2>Performance Envelope</h2>
-            <div class="grid-3">
-                <div class="spec-item">
-                    <span class="spec-val">47k+</span>
-                    <span class="spec-label">Target Valid Requests</span>
-                </div>
-                <div class="spec-item">
-                    <span class="spec-val">1.5</span>
-                    <span class="spec-label">Max CPU Cores (Total)</span>
-                </div>
-                <div class="spec-item">
-                    <span class="spec-val">550</span>
-                    <span class="spec-label">Max Memory (MB)</span>
-                </div>
-            </div>
+      <div class="arch-block">
+        <span class="comment">// infrastructure</span><br>
+        <span class="keyword">nginx</span> <span class="string">:9999</span> &rarr; load balancer (least_conn)<br>
+        &nbsp;&nbsp;<span class="keyword">api-01</span> <span class="string">:8080</span> &rarr; go-chi/chi v5 (Go 1.21)<br>
+        &nbsp;&nbsp;<span class="keyword">api-02</span> <span class="string">:8080</span> &rarr; go-chi/chi v5 (Go 1.21)<br>
+        <span class="keyword">postgres</span> <span class="string">:5432</span> &rarr; database (PLpgSQL stored procedures)<br>
+        <br>
+        <span class="comment">// constraints</span><br>
+        total: <span class="string">1.5 vCPU</span> + <span class="string">550MB RAM</span>
+      </div>
+    </div>
+  </section>
 
-            <div class="arch-list">
-                <div>2x API Instances</div>
-                <div>1x Nginx LB</div>
-                <div>1x Postgres Database</div>
-                <div>Docker Compose Orchestration</div>
-            </div>
-        </section>
-    </main>
+  <section id="result">
+    <div class="container">
+      <p class="section-label">// competition result</p>
+      <h2 class="section-title">Original .NET Score</h2>
+      <p class="section-text">
+        The original .NET implementation that this project is based on achieved a perfect score in the
+        official Rinha de Backend competition &mdash; zero penalties across both evaluation criteria.
+      </p>
+      <div class="result-card">
+        <div class="result-header">
+          <span class="result-icon">&#127942;</span>
+          <span class="result-title">jonathanperis &mdash; rinha2-back-end-dotnet</span>
+        </div>
+        <div class="result-grid">
+          <div class="result-stat">
+            <div class="result-stat-label">SLA Penalty (&gt;249ms)</div>
+            <div class="result-stat-value perfect">USD 0.00</div>
+          </div>
+          <div class="result-stat">
+            <div class="result-stat-label">Consistency Penalty</div>
+            <div class="result-stat-value perfect">USD 0.00</div>
+          </div>
+          <div class="result-stat">
+            <div class="result-stat-label">Total Penalty</div>
+            <div class="result-stat-value perfect">USD 0.00</div>
+          </div>
+          <div class="result-stat">
+            <div class="result-stat-label">Final Score</div>
+            <div class="result-stat-value gold">USD 100,000</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <footer>
-        <p>Built for Rinha de Backend 2024/Q1 | by <a href="https://github.com/jonathanperis">jonathanperis</a></p>
-    </footer>
+  <section id="stack">
+    <div class="container">
+      <p class="section-label">// tech stack</p>
+      <h2 class="section-title">Built With</h2>
+      <div class="stack-grid">
+        <div class="stack-item">
+          <span class="stack-dot" style="background: #00ADD8"></span>
+          <div>
+            <div class="stack-name">Go / chi v5</div>
+            <div class="stack-desc">Lightweight HTTP router</div>
+          </div>
+        </div>
+        <div class="stack-item">
+          <span class="stack-dot" style="background: #00ADD8"></span>
+          <div>
+            <div class="stack-name">pgx/v5</div>
+            <div class="stack-desc">Native PostgreSQL driver</div>
+          </div>
+        </div>
+        <div class="stack-item">
+          <span class="stack-dot" style="background: #336791"></span>
+          <div>
+            <div class="stack-name">PostgreSQL</div>
+            <div class="stack-desc">PLpgSQL stored procedures</div>
+          </div>
+        </div>
+        <div class="stack-item">
+          <span class="stack-dot" style="background: #009639"></span>
+          <div>
+            <div class="stack-name">Nginx</div>
+            <div class="stack-desc">Reverse proxy, load balancer</div>
+          </div>
+        </div>
+        <div class="stack-item">
+          <span class="stack-dot" style="background: #2496ED"></span>
+          <div>
+            <div class="stack-name">Docker</div>
+            <div class="stack-desc">Multi-stage Alpine builds</div>
+          </div>
+        </div>
+        <div class="stack-item">
+          <span class="stack-dot" style="background: #7D64FF"></span>
+          <div>
+            <div class="stack-name">Grafana K6</div>
+            <div class="stack-desc">Load testing, HTML reports</div>
+          </div>
+        </div>
+        <div class="stack-item">
+          <span class="stack-dot" style="background: #F46800"></span>
+          <div>
+            <div class="stack-name">Prometheus + Grafana</div>
+            <div class="stack-desc">Metrics & monitoring</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
+  <section id="reports">
+    <div class="container">
+      <p class="section-label">// stress tests</p>
+      <h2 class="section-title">K6 Load Test Reports</h2>
+      <p class="section-text">
+        Reports generated automatically via
+        <a href="https://github.com/jonathanperis/rinha2-back-end-go/actions/workflows/main-release-webapi.yml" target="_blank" rel="noopener">GitHub Actions</a>
+        on every push to <code>main</code>. Previously built on Gatling/Scala, now migrated to Grafana K6 for native CI/CD integration.
+      </p>
+      <div id="reports-container">
+        <div class="reports-loading">
+          <span class="spinner"></span> Loading reports...
+        </div>
+      </div>
+      <div id="older-reports-container"></div>
+    </div>
+  </section>
+
+  <!-- Stress Tests -->
+  <section id="stress-tests">
+    <div class="container">
+      <p class="section-label">// stress tests</p>
+      <h2 class="section-title">K6 Test Suite</h2>
+      <p class="section-text">
+        All implementations are validated by the same Grafana K6 stress test suite, originally written in Gatling/Scala.
+      </p>
+      <div class="impl-grid">
+        <a href="https://jonathanperis.github.io/rinha2-back-end-k6/" target="_blank" rel="noopener" class="impl-card">
+          <span class="impl-dot" style="background: #7D64FF"></span>
+          <span class="impl-name">K6 Stress Tests</span>
+          <span class="impl-badge">Test Suite</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Other Implementations -->
+  <section id="implementations">
+    <div class="container">
+      <p class="section-label">// other implementations</p>
+      <h2 class="section-title">Rinha de Backend Family</h2>
+      <p class="section-text">
+        Other implementations of the same challenge, sharing the same PostgreSQL stored-procedure strategy.
+      </p>
+      <div class="impl-grid">
+        <a href="https://jonathanperis.github.io/rinha2-back-end-dotnet/" target="_blank" rel="noopener" class="impl-card">
+          <span class="impl-dot" style="background: #512BD4"></span>
+          <span class="impl-name">.NET / C#</span>
+          <span class="impl-badge">Perfect Score</span>
+        </a>
+        <a href="https://jonathanperis.github.io/rinha2-back-end-rust/" target="_blank" rel="noopener" class="impl-card">
+          <span class="impl-dot" style="background: #DEA584"></span>
+          <span class="impl-name">Rust</span>
+          <span class="impl-badge-learning">Learning Purposes</span>
+        </a>
+        <a href="https://jonathanperis.github.io/rinha2-back-end-python/" target="_blank" rel="noopener" class="impl-card">
+          <span class="impl-dot" style="background: #3776AB"></span>
+          <span class="impl-name">Python</span>
+          <span class="impl-badge-learning">Learning Purposes</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-inner">
+        <span class="footer-text">Built by <a href="https://jonathanperis.github.io/" target="_blank" rel="noopener">Jonathan Peris</a></span>
+        <div class="footer-links">
+          <a href="https://github.com/jonathanperis" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://jonathanperis.github.io/rinha2-back-end-dotnet/" target="_blank" rel="noopener">.NET Original</a>
+          <a href="https://github.com/zanfranceschi/rinha-de-backend-2024-q1" target="_blank" rel="noopener">Competition</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/script.js"></script>
 </body>
 </html>
