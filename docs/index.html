@@ -1,756 +1,301 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>rinha2-back-end-go - Documentation</title>
-  <meta name="description" content="Go 1.23 implementation of Rinha de Backend 2024/Q1 — minimal single-file API built for performance under constraints">
-  <style>
-    :root {
-      --bg: #0a0a0a;
-      --sidebar-bg: #111111;
-      --text-primary: #ededed;
-      --text-muted: #888888;
-      --text-body: #c8c8c8;
-      --accent: #7c6af7;
-      --accent-hover: #9b8df9;
-      --code-bg: #1e1e2e;
-      --code-text: #cdd6f4;
-      --border: #1f1f2e;
-      --code-border: #2a2a3e;
-      --sidebar-width: 260px;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rinha2-back-end-go | High Speed Performance</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;600;700&display=swap');
+        
+        :root {
+            --bg-base: #0c1f1f;
+            --bg-card: #132a2a;
+            --gopher-cyan: #00ADD8;
+            --gopher-light: #5DC9E2;
+            --text-main: #f0fdfd;
+            --text-muted: #8ebbbc;
+            --border-line: #1c4040;
+        }
 
-    * { box-sizing: border-box; }
-    
-    html {
-      scroll-behavior: smooth;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    }
-    
-    body {
-      margin: 0;
-      padding: 0;
-      background: var(--bg);
-      color: var(--text-primary);
-      display: flex;
-    }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-    /* Sidebar */
-    .sidebar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: var(--sidebar-width);
-      height: 100vh;
-      background: var(--sidebar-bg);
-      display: flex;
-      flex-direction: column;
-      border-right: 1px solid var(--border);
-      z-index: 100;
-      transition: transform 0.3s ease;
-    }
+        body {
+            font-family: 'Fira Code', monospace;
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
 
-    .sidebar-header {
-      padding: 24px 24px 16px;
-    }
+        /* Animated Data Stream Background */
+        .data-streams {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            pointer-events: none;
+            opacity: 0.1;
+            background: linear-gradient(90deg, var(--bg-base) 21px, transparent 1%) center, linear-gradient(var(--bg-base) 21px, transparent 1%) center, var(--gopher-light);
+            background-size: 22px 22px;
+        }
 
-    .repo-title {
-      font-size: 18px;
-      font-weight: 700;
-      margin: 0 0 4px;
-      color: var(--text-primary);
-      letter-spacing: -0.01em;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+        /* Nav */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 3rem;
+            background: var(--bg-base);
+            border-bottom: 1px solid var(--border-line);
+        }
 
-    .repo-title::before {
-      content: '';
-      display: block;
-      width: 16px;
-      height: 16px;
-      background: var(--accent);
-      border-radius: 4px;
-    }
+        .logo {
+            font-weight: 700;
+            color: var(--gopher-cyan);
+            font-size: 1.2rem;
+        }
 
-    .repo-description {
-      font-size: 13px;
-      color: var(--text-muted);
-      margin: 0 0 16px;
-    }
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            margin-left: 2rem;
+            transition: color 0.2s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--gopher-light);
+        }
 
-    .search-box {
-      width: 100%;
-      background: #000;
-      border: 1px solid var(--border);
-      color: var(--text-primary);
-      border-radius: 6px;
-      padding: 8px 12px;
-      font-size: 14px;
-      outline: none;
-      transition: border-color 0.2s;
-    }
+        /* Main */
+        main {
+            flex: 1;
+            padding: 5rem 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+        }
 
-    .search-box:focus {
-      border-color: var(--accent);
-    }
+        /* Hero */
+        .hero {
+            margin-bottom: 5rem;
+            position: relative;
+        }
 
-    .sidebar-nav-container {
-      flex: 1;
-      overflow-y: auto;
-      padding: 8px 16px 24px;
-    }
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            color: #fff;
+        }
 
-    .sidebar-nav-container ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
+        .hero h1 span {
+            color: var(--gopher-cyan);
+        }
 
-    .sidebar-nav-container li {
-      margin-bottom: 2px;
-    }
+        .tagline {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            margin-bottom: 3rem;
+            max-width: 700px;
+        }
 
-    .nav-item {
-      display: block;
-      padding: 8px 12px;
-      color: var(--text-muted);
-      text-decoration: none;
-      font-size: 14px;
-      border-radius: 6px;
-      transition: all 0.2s;
-    }
+        /* Badges */
+        .badges {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
 
-    .nav-item:hover {
-      color: var(--text-primary);
-      background: rgba(255, 255, 255, 0.05);
-    }
+        .badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-line);
+            color: var(--gopher-light);
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
 
-    .nav-item.active {
-      color: var(--accent);
-      background: rgba(124, 106, 247, 0.1);
-      font-weight: 500;
-    }
+        /* CTAs */
+        .ctas {
+            display: flex;
+            gap: 1rem;
+        }
 
-    .sidebar-footer {
-      padding: 16px 24px;
-      border-top: 1px solid var(--border);
-      font-size: 12px;
-      color: var(--text-muted);
-    }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.875rem 2rem;
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
 
-    .sidebar-footer a {
-      color: var(--text-muted);
-      text-decoration: none;
-      display: block;
-      margin-bottom: 8px;
-    }
+        .btn-primary {
+            background: var(--gopher-cyan);
+            color: var(--bg-base);
+        }
 
-    .sidebar-footer a:hover {
-      color: var(--text-primary);
-    }
+        .btn-primary:hover {
+            background: var(--gopher-light);
+            transform: translateY(-2px);
+        }
 
-    /* Main Content */
-    .content-wrapper {
-      margin-left: var(--sidebar-width);
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      width: calc(100% - var(--sidebar-width));
-    }
+        .btn-outline {
+            border: 1px solid var(--gopher-cyan);
+            color: var(--gopher-cyan);
+            background: transparent;
+        }
 
-    .content {
-      width: 100%;
-      max-width: 860px;
-      padding: 48px 64px;
-    }
+        .btn-outline:hover {
+            background: rgba(0, 173, 216, 0.1);
+        }
 
-    /* Typography */
-    h1 {
-      font-size: 32px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      margin: 0 0 8px;
-      color: var(--text-primary);
-    }
+        /* Specs & Stats Grid */
+        .specs {
+            background: var(--bg-card);
+            border-radius: 8px;
+            padding: 3rem;
+            margin-bottom: 4rem;
+            border: 1px solid var(--border-line);
+        }
 
-    h2 {
-      font-size: 22px;
-      font-weight: 600;
-      letter-spacing: -0.01em;
-      margin: 48px 0 16px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid var(--border);
-      color: var(--text-primary);
-    }
+        .specs h2 {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            color: var(--gopher-light);
+        }
 
-    h3 {
-      font-size: 18px;
-      font-weight: 600;
-      margin: 32px 0 12px;
-      color: var(--text-primary);
-    }
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
 
-    p {
-      font-size: 15px;
-      line-height: 1.75;
-      color: var(--text-body);
-      margin: 0 0 16px;
-    }
+        .spec-item {
+            display: flex;
+            flex-direction: column;
+        }
 
-    a {
-      color: var(--accent);
-      text-decoration: none;
-    }
+        .spec-val {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
 
-    a:hover {
-      text-decoration: underline;
-    }
+        .spec-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
 
-    /* Code */
-    pre {
-      background: var(--code-bg);
-      border: 1px solid var(--code-border);
-      border-radius: 8px;
-      padding: 16px 20px;
-      overflow-x: auto;
-      margin: 24px 0;
-      position: relative;
-    }
-    
-    pre code {
-      background: transparent;
-      padding: 0;
-      border-radius: 0;
-      color: var(--code-text);
-      font-size: 13px;
-    }
+        .arch-list {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px dashed var(--border-line);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
 
-    code {
-      font-family: 'JetBrains Mono', 'Fira Code', monospace;
-      background: var(--code-bg);
-      color: var(--code-text);
-      border-radius: 4px;
-      padding: 2px 6px;
-      font-size: 13px;
-    }
+        .arch-list div::before {
+            content: '✓';
+            color: var(--gopher-cyan);
+            margin-right: 0.5rem;
+        }
 
-    /* Tables */
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      border-radius: 8px;
-      overflow: hidden;
-      margin: 24px 0;
-      font-size: 14px;
-      border: 1px solid var(--border);
-    }
+        /* Footer */
+        footer {
+            padding: 3rem;
+            text-align: center;
+            border-top: 1px solid var(--border-line);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
 
-    th, td {
-      padding: 10px 16px;
-      text-align: left;
-    }
-
-    th {
-      background: #1a1a2e;
-      color: var(--text-primary);
-      font-weight: 600;
-      border-bottom: 1px solid var(--border);
-    }
-
-    td {
-      border-bottom: 1px solid var(--border);
-      color: var(--text-body);
-    }
-
-    tr:nth-child(even) {
-      background: rgba(255, 255, 255, 0.02);
-    }
-    
-    tr:last-child td {
-      border-bottom: none;
-    }
-
-    /* Blockquotes */
-    blockquote {
-      margin: 24px 0;
-      padding: 12px 20px;
-      background: var(--sidebar-bg);
-      border-left: 3px solid var(--accent);
-      border-radius: 0 6px 6px 0;
-      color: var(--text-muted);
-    }
-
-    blockquote p {
-      margin: 0;
-    }
-
-    /* HR */
-    hr {
-      border: none;
-      border-top: 1px solid var(--border);
-      margin: 40px 0;
-    }
-
-    /* Sections */
-    section.doc-section {
-      scroll-margin-top: 80px;
-      margin-bottom: 80px;
-    }
-    
-    .hidden-section {
-      display: none;
-    }
-    
-    .search-highlight {
-      background: rgba(124, 106, 247, 0.3);
-      border-radius: 2px;
-      padding: 0 2px;
-    }
-
-    /* Mobile */
-    .mobile-header {
-      display: none;
-      position: sticky;
-      top: 0;
-      background: var(--bg);
-      border-bottom: 1px solid var(--border);
-      padding: 16px 24px;
-      z-index: 90;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .menu-toggle {
-      background: none;
-      border: none;
-      color: var(--text-primary);
-      cursor: pointer;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .menu-toggle span {
-      display: block;
-      width: 20px;
-      height: 2px;
-      background: currentColor;
-      border-radius: 2px;
-    }
-    
-    .overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(2px);
-      z-index: 95;
-    }
-
-    @media (max-width: 768px) {
-      .sidebar {
-        transform: translateX(-100%);
-      }
-      .sidebar.open {
-        transform: translateX(0);
-      }
-      .content-wrapper {
-        margin-left: 0;
-        width: 100%;
-      }
-      .content {
-        padding: 32px 24px;
-      }
-      .mobile-header {
-        display: flex;
-      }
-      .overlay.open {
-        display: block;
-      }
-    }
-  </style>
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+        footer a {
+            color: var(--gopher-cyan);
+            text-decoration: none;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
 
-  <!-- Mobile Header -->
-  <div class="mobile-header">
-    <button class="menu-toggle" id="menuToggle" aria-label="Toggle Menu">
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
-    <div class="repo-title">rinha2-back-end-go</div>
-  </div>
+    <div class="data-streams"></div>
 
-  <div class="overlay" id="overlay"></div>
+    <nav>
+        <div class="logo">rinha2-go</div>
+        <div class="nav-links">
+            <a href="https://github.com/jonathanperis/rinha2-back-end-go">GitHub</a>
+            <a href="./docs/">Docs</a>
+        </div>
+    </nav>
 
-  <!-- Sidebar -->
-  <aside class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-      <h1 class="repo-title">rinha2-back-end-go</h1>
-      <p class="repo-description">Go 1.23 implementation of Rinha de Backend 2024/Q1 — minimal single-file API built for performance under constraints</p>
-      <input type="text" id="searchInput" class="search-box" placeholder="Search documentation...">
-    </div>
-    <div class="sidebar-nav-container">
-      <ul>
-  <li><a href="#home" class="nav-item">Home</a></li>
-  <li><a href="#architecture" class="nav-item">Architecture</a></li>
-  <li><a href="#challenge" class="nav-item">Challenge</a></li>
-  <li><a href="#ci-cd-pipeline" class="nav-item">CI CD Pipeline</a></li>
-  <li><a href="#getting-started" class="nav-item">Getting Started</a></li>
-  <li><a href="#performance" class="nav-item">Performance</a></li>
-</ul>
-    </div>
-    <div class="sidebar-footer">
-      <a href="https://github.com/jonathanperis/rinha2-back-end-go" target="_blank" rel="noopener noreferrer">View on GitHub</a>
-      <div>Built by Jonathan Peris</div>
-    </div>
-  </aside>
-
-  <!-- Main Content -->
-  <div class="content-wrapper">
-    <main class="content" id="mainContent">
-      
-<section id="home" class="doc-section">
-  <h1 class="page-title">Home</h1>
-  <h1>rinha2-back-end-go</h1>
-<p>Go 1.23 implementation for the Rinha de Backend 2024/Q1 challenge. Manages a fictional bank API with transaction processing and balance statements under strict resource constraints (1.5 CPU, 550MB RAM total across all containers).</p>
-<h2>Wiki Pages</h2>
-<table>
-<thead>
-<tr>
-<th>Page</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><a href="Challenge">Challenge</a></td>
-<td>What is Rinha de Backend 2024/Q1</td>
-</tr>
-<tr>
-<td><a href="Architecture">Architecture</a></td>
-<td>Stack, services, resource constraints</td>
-</tr>
-<tr>
-<td><a href="Getting-Started">Getting Started</a></td>
-<td>Prerequisites and how to run</td>
-</tr>
-<tr>
-<td><a href="Performance">Performance</a></td>
-<td>Results, benchmarks, resource usage</td>
-</tr>
-<tr>
-<td><a href="CI-CD-Pipeline">CI/CD Pipeline</a></td>
-<td>GitHub Actions workflows</td>
-</tr>
-</tbody></table>
-<h2>Key Features</h2>
-<ul>
-<li>Minimal single-file API implementation (~190 lines of Go)</li>
-<li>chi/v5 router with pgx/v5 PostgreSQL driver</li>
-<li>PostgreSQL stored procedures for server-side business logic</li>
-<li>All requests under 800ms at 250MB RAM usage</li>
-</ul>
-<hr>
-<p><em><a href="https://github.com/jonathanperis/rinha2-back-end-go">GitHub</a> · <a href="https://jonathanperis.github.io/">Jonathan Peris</a></em></p>
-
-</section>
-
-<section id="architecture" class="doc-section">
-  <h1 class="page-title">Architecture</h1>
-  <h1>Architecture</h1>
-<h2>Overview</h2>
-<p>The system follows a shared architecture across all Rinha de Backend implementations: two API instances behind an Nginx reverse proxy, with a single PostgreSQL database and an observability stack.</p>
-<h2>Services</h2>
-<table>
-<thead>
-<tr>
-<th>Service</th>
-<th>Role</th>
-<th>CPU</th>
-<th>RAM</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>webapi1</td>
-<td>Go 1.23 API instance (chi/v5 + pgx/v5)</td>
-<td>0.4</td>
-<td>100MB</td>
-</tr>
-<tr>
-<td>webapi2</td>
-<td>Go 1.23 API instance (chi/v5 + pgx/v5)</td>
-<td>0.4</td>
-<td>100MB</td>
-</tr>
-<tr>
-<td>nginx</td>
-<td>Reverse proxy / load balancer (least-conn)</td>
-<td>0.2</td>
-<td>20MB</td>
-</tr>
-<tr>
-<td>postgresql</td>
-<td>Database with stored procedures</td>
-<td>0.5</td>
-<td>330MB</td>
-</tr>
-<tr>
-<td>k6</td>
-<td>Load testing</td>
-<td>(not counted)</td>
-<td>(not counted)</td>
-</tr>
-<tr>
-<td>grafana + influxdb</td>
-<td>Observability dashboards</td>
-<td>(not counted)</td>
-<td>(not counted)</td>
-</tr>
-</tbody></table>
-<h2>Load Balancing</h2>
-<p>Nginx uses <code>least_conn</code> strategy to distribute requests across the two API instances.</p>
-<h2>Database</h2>
-<p>Business logic is implemented in PostgreSQL stored procedures. The database is tuned for maximum write performance:</p>
-<ul>
-<li><code>synchronous_commit=0</code> — no wait for WAL flush</li>
-<li><code>fsync=0</code> — skip fsync on writes</li>
-<li><code>full_page_writes=0</code> — skip full page writes</li>
-</ul>
-<h2>Implementation Details</h2>
-<ul>
-<li>Minimal single-file Go API (~190 lines)</li>
-<li>chi/v5 lightweight HTTP router</li>
-<li>pgx/v5 PostgreSQL driver with built-in connection pooling</li>
-<li>Multi-stage Docker build for minimal container image size</li>
-</ul>
-
-</section>
-
-<section id="challenge" class="doc-section">
-  <h1 class="page-title">Challenge</h1>
-  <h1>Challenge</h1>
-<h2>Rinha de Backend 2024/Q1</h2>
-<p>The Rinha de Backend is a Brazilian backend programming challenge. The 2024/Q1 edition simulates a fictional bank called &quot;Rinha Financeira&quot; that manages up to 5 named clients, each seeded at startup with a credit limit and initial balance.</p>
-<h2>Endpoints</h2>
-<p>Two API endpoints are required:</p>
-<table>
-<thead>
-<tr>
-<th>Endpoint</th>
-<th>Method</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>/clientes/{id}/transacoes</code></td>
-<td>POST</td>
-<td>Submit a debit or credit transaction for a client (IDs 1-5)</td>
-</tr>
-<tr>
-<td><code>/clientes/{id}/extrato</code></td>
-<td>GET</td>
-<td>Get a client&#39;s current balance, credit limit, and recent transactions</td>
-</tr>
-</tbody></table>
-<h2>Constraints</h2>
-<p>The challenge imposes strict resource limits across all containers combined:</p>
-<ul>
-<li><strong>1.5 CPU total</strong> shared across all services</li>
-<li><strong>550MB RAM total</strong> shared across all services</li>
-<li>The system is stress tested using Grafana k6 with concurrent users submitting transactions and querying statements</li>
-</ul>
-<h2>Source</h2>
-<p>Full specification: <a href="https://github.com/zanfranceschi/rinha-de-backend-2024-q1">github.com/zanfranceschi/rinha-de-backend-2024-q1</a></p>
-
-</section>
-
-<section id="ci-cd-pipeline" class="doc-section">
-  <h1 class="page-title">CI CD Pipeline</h1>
-  <h1>CI/CD Pipeline</h1>
-<h2>Workflows</h2>
-<p>This repository uses two GitHub Actions workflows:</p>
-<h3>build-check-webapi.yml</h3>
-<ul>
-<li><strong>Trigger:</strong> Pull requests</li>
-<li><strong>Steps:</strong> Builds the API container and runs a health check to verify the service starts correctly</li>
-<li><strong>Purpose:</strong> Catch build failures and regressions before merging</li>
-</ul>
-<h3>main-release-webapi.yml</h3>
-<ul>
-<li><strong>Trigger:</strong> Push to main branch</li>
-<li><strong>Steps:</strong> Builds a multi-platform Docker image and pushes it to GitHub Container Registry (GHCR)</li>
-<li><strong>Purpose:</strong> Automated release of production-ready container images</li>
-</ul>
-
-</section>
-
-<section id="getting-started" class="doc-section">
-  <h1 class="page-title">Getting Started</h1>
-  <h1>Getting Started</h1>
-<h2>Prerequisites</h2>
-<ul>
-<li>Docker with Docker Compose</li>
-</ul>
-<h2>Clone and Run</h2>
-<pre><code class="language-bash">git clone https://github.com/jonathanperis/rinha2-back-end-go.git
-cd rinha2-back-end-go
-docker compose up nginx -d --build
-</code></pre>
-<h2>Access</h2>
-<p>The API is available at <code>http://localhost:9999</code></p>
-<h2>Endpoints</h2>
-<table>
-<thead>
-<tr>
-<th>Endpoint</th>
-<th>Method</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>/clientes/{id}/transacoes</code></td>
-<td>POST</td>
-<td>Submit debit or credit transaction</td>
-</tr>
-<tr>
-<td><code>/clientes/{id}/extrato</code></td>
-<td>GET</td>
-<td>Get account balance statement</td>
-</tr>
-</tbody></table>
-<h2>Example Requests</h2>
-<h3>Create Transaction</h3>
-<pre><code class="language-bash">curl -X POST http://localhost:9999/clientes/1/transacoes \
-  -H &quot;Content-Type: application/json&quot; \
-  -d &#39;{&quot;valor&quot;: 1000, &quot;tipo&quot;: &quot;c&quot;, &quot;descricao&quot;: &quot;deposito&quot;}&#39;
-</code></pre>
-<h3>Get Statement</h3>
-<pre><code class="language-bash">curl http://localhost:9999/clientes/1/extrato
-</code></pre>
-
-</section>
-
-<section id="performance" class="doc-section">
-  <h1 class="page-title">Performance</h1>
-  <h1>Performance</h1>
-<h2>Resource Constraints</h2>
-<p>The challenge allows a total of 1.5 CPU and 550MB RAM across all containers.</p>
-<h2>Actual Usage</h2>
-<table>
-<thead>
-<tr>
-<th>Metric</th>
-<th>Limit</th>
-<th>Actual</th>
-<th>Margin</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>RAM</td>
-<td>550MB</td>
-<td>~250MB</td>
-<td>60% below limit</td>
-</tr>
-<tr>
-<td>Response time</td>
-<td>-</td>
-<td>&lt; 800ms</td>
-<td>All requests</td>
-</tr>
-</tbody></table>
-<h2>Results</h2>
-<ul>
-<li>All requests completed under 800ms</li>
-<li>Total RAM usage of approximately 250MB, which is 60% below the 550MB limit</li>
-<li>Built for learning purposes</li>
-</ul>
-<h2>Stress Testing</h2>
-<p>Load tests are run using the shared <a href="https://github.com/jonathanperis/rinha2-back-end-k6">rinha2-back-end-k6</a> test suite, which simulates concurrent users performing debits, credits, validations, and statement queries.</p>
-
-</section>
-
-    </main>
-  </div>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      // Mobile menu toggle
-      const menuToggle = document.getElementById('menuToggle');
-      const sidebar = document.getElementById('sidebar');
-      const overlay = document.getElementById('overlay');
-
-      function toggleMenu() {
-        sidebar.classList.toggle('open');
-        overlay.classList.toggle('open');
-      }
-
-      if(menuToggle) menuToggle.addEventListener('click', toggleMenu);
-      if(overlay) overlay.addEventListener('click', toggleMenu);
-
-      // Scrollspy
-      const sections = document.querySelectorAll('section.doc-section');
-      const navItems = document.querySelectorAll('.nav-item');
-      
-      const observerOptions = {
-        root: null,
-        rootMargin: '-80px 0px -60% 0px',
-        threshold: 0
-      };
-
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            navItems.forEach(item => {
-              item.classList.remove('active');
-              if (item.getAttribute('href') === `#${entry.target.id}`) {
-                item.classList.add('active');
-                // Scroll sidebar if needed
-                item.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-              }
-            });
-          }
-        });
-      }, observerOptions);
-
-      sections.forEach(section => observer.observe(section));
-
-      // Click on nav items (mobile close)
-      navItems.forEach(item => {
-        item.addEventListener('click', () => {
-          if (window.innerWidth <= 768) {
-            toggleMenu();
-          }
-        });
-      });
-
-      // Search
-      const searchInput = document.getElementById('searchInput');
-      if (searchInput) {
-        searchInput.addEventListener('input', (e) => {
-          const query = e.target.value.toLowerCase();
-          
-          sections.forEach(section => {
-            const text = section.textContent.toLowerCase();
-            const navItem = document.querySelector(`.nav-item[href="#${section.id}"]`);
-            const li = navItem ? navItem.parentElement : null;
+    <main>
+        <section class="hero">
+            <h1>Minimal. Flat.<br><span>Lightning Fast.</span></h1>
+            <p class="tagline">Go Implementation of Rinha de Backend 2024/Q1. Delivering extreme throughput and low latency under strict resource constraints for a fictional bank API.</p>
             
-            if (text.includes(query) || query === '') {
-              section.classList.remove('hidden-section');
-              if(li) li.style.display = '';
-            } else {
-              section.classList.add('hidden-section');
-              if(li) li.style.display = 'none';
-            }
-          });
-        });
-      }
-    });
-  </script>
+            <div class="badges">
+                <span class="badge">Go 1.22</span>
+                <span class="badge">Nginx</span>
+                <span class="badge">PostgreSQL</span>
+                <span class="badge">pgxpool</span>
+            </div>
+
+            <div class="ctas">
+                <a href="./docs/" class="btn btn-primary">View Documentation &rarr;</a>
+                <a href="https://github.com/jonathanperis/rinha2-back-end-go" class="btn btn-outline">View on GitHub &rarr;</a>
+            </div>
+        </section>
+
+        <section class="specs">
+            <h2>Performance Envelope</h2>
+            <div class="grid-3">
+                <div class="spec-item">
+                    <span class="spec-val">47k+</span>
+                    <span class="spec-label">Target Valid Requests</span>
+                </div>
+                <div class="spec-item">
+                    <span class="spec-val">1.5</span>
+                    <span class="spec-label">Max CPU Cores (Total)</span>
+                </div>
+                <div class="spec-item">
+                    <span class="spec-val">550</span>
+                    <span class="spec-label">Max Memory (MB)</span>
+                </div>
+            </div>
+
+            <div class="arch-list">
+                <div>2x API Instances</div>
+                <div>1x Nginx LB</div>
+                <div>1x Postgres Database</div>
+                <div>Docker Compose Orchestration</div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Built for Rinha de Backend 2024/Q1 | by <a href="https://github.com/jonathanperis">jonathanperis</a></p>
+    </footer>
+
 </body>
 </html>

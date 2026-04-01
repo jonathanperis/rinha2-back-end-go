@@ -1,5 +1,8 @@
 name: Build Check
 
+permissions:
+  contents: read
+
 on:
   pull_request:
     branches:
@@ -29,6 +32,7 @@ jobs:
           go build -o rinha2-back-end-go .
 
   container-test:
+    needs: setup-build-test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
