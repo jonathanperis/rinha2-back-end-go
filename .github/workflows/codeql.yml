@@ -16,6 +16,9 @@ jobs:
   analyze:
     name: Analyze (go)
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./src/WebApi
 
     steps:
       - name: Checkout Repository
@@ -34,10 +37,8 @@ jobs:
         with:
           languages: go
           queries: security-and-quality
-          source-root: ./src/WebApi
 
       - name: Build for CodeQL
-        working-directory: ./src/WebApi
         run: go build -v ./...
 
       - name: Perform CodeQL Analysis
