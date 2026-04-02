@@ -36,9 +36,11 @@ jobs:
           queries: security-and-quality
           config-file: ./.github/codeql/codeql-config.yml
 
-      - name: Build for CodeQL
-        working-directory: ./src/WebApi
-        run: go build -o rinha2-back-end-go .
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v4
+        env:
+          CODEQL_EXTRACTOR_GO_BUILD_TRACING: on
+          CODEQL_EXTRACTOR_GO_BUILD_TRACING_DIR: ./src/WebApi
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v4
