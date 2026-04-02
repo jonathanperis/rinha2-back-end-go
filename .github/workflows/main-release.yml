@@ -28,6 +28,7 @@ jobs:
         uses: actions/setup-go@v6
         with:
           go-version: '1.24.1'
+          cache-dependency-path: ./src/WebApi/go.sum
 
       - name: Build the application
         run: |
