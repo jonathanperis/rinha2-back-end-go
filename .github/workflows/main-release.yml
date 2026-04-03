@@ -114,13 +114,3 @@ jobs:
           name: stress-test-report
           path: ./prod/conf/stress-test/reports/stress-test-report.html
 
-      - name: Commit Report to docs
-        run: |
-          TIMESTAMP=$(date +%Y%m%d%H%M%S)
-          mkdir -p docs/reports
-          cp ./prod/conf/stress-test/reports/stress-test-report.html docs/reports/stress-test-report-${TIMESTAMP}.html
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/reports/
-          git diff --staged --quiet || (git commit -m "chore: add stress test report ${TIMESTAMP} [skip ci]" && git push)
-
