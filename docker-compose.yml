@@ -29,7 +29,7 @@ services:
       - "4201:8080"
 
   db:
-    image: postgres
+    image: postgres:16
     container_name: db-rinha
     restart: always
     volumes:
