@@ -103,6 +103,8 @@ rinha2-back-end-go/
 ## Contribution Workflow
 
 - **All changes** must go through a branch + PR strategy (never commit directly to main)
+- **Always sync main before branching** — run `git fetch origin main && git checkout main && git pull --rebase origin main` before creating a new branch
+- **Always sync main before opening PRs** — fetch and pull main again before `gh pr create` to avoid conflicts
 - **PRs are rebase only** — no merge commits
 - **Repo-wide files** (SECURITY.md, CODE_OF_CONDUCT.md, CONTRIBUTING.md, FUNDING.yml, etc.) live in the `.github` repo — do not recreate them in this repository
 - **Use `gh` CLI** for all GitHub operations (repos, PRs, checks, merges, releases)
