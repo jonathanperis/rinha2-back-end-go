@@ -6,59 +6,25 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
   pages: write
   id-token: write
+  contents: read
 
 concurrency:
   group: github-pages
   cancel-in-progress: false
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-
     steps:
       - uses: actions/checkout@v6
-
-      - name: Clone wiki
-        run: git clone https://github.com/${{ github.repository }}.wiki.git wiki/ || echo "Wiki not found, skipping"
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: '20'
-
-      - name: Install marked
-        run: npm install marked --no-save
-
-      - name: Generate docs
-        env:
-          DOCS_TITLE: "rinha2-back-end-go"
-          DOCS_DESCRIPTION: "Go 1.23 implementation of Rinha de Backend 2024/Q1 — minimal single-file API built for performance under constraints"
-          GITHUB_URL: "https://github.com/jonathanperis/rinha2-back-end-go"
-          OUTPUT_PATH: "docs/docs/index.html"
-          TEMPLATE_PATH: ".github/docs-template.html"
-        run: node .github/generate-docs.js
-
-      - name: Commit generated docs
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/docs/index.html
-          git diff --staged --quiet || (git commit -m "chore: regenerate docs from wiki [skip ci]" && git push)
-
-      - name: Configure Pages
-        uses: actions/configure-pages@v6
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v4
+      - uses: actions/configure-pages@v6
+      - uses: actions/upload-pages-artifact@v4
         with:
           path: docs/
-
-      - name: Deploy to GitHub Pages
-        id: deployment
+      - id: deployment
         uses: actions/deploy-pages@v5
