@@ -7,8 +7,8 @@ on:
   pull_request:
     branches:
       - main
-
   workflow_dispatch:
+
 jobs:
   setup-build-test:
     runs-on: ubuntu-latest
@@ -25,8 +25,8 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v6
         with:
-          go-version: '1.24.1'
-          cache-dependency-path: ./src/WebApi/go.sum
+          go-version-file: src/WebApi/go.mod
+          cache-dependency-path: src/WebApi/go.sum
 
       - name: Build the application
         run: |
@@ -60,3 +60,4 @@ jobs:
           done
           echo "Healthcheck failed after 20 attempts."
           exit 1
+
