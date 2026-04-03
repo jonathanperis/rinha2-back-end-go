@@ -1,0 +1,1 @@
+- [Architecture](architecture.md) — Single-file chi/v5 design, pgx pooling, context timeouts, 2 deps only, shared infra
