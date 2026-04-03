@@ -32,8 +32,6 @@ services:
     image: postgres
     container_name: db-rinha
     restart: always
-    depends_on:
-      - postgres-exporter      
     volumes:
       - db-data:/var/lib/postgresql/data
       - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
@@ -73,8 +71,11 @@ services:
           memory: "20MB"
 
   postgres-exporter:
-    image: prometheuscommunity/postgres-exporter 
+    image: prometheuscommunity/postgres-exporter
     container_name: postgres-exporter-rinha
+    depends_on:
+      db:
+        condition: service_healthy
     ports:
       - 9187:9187
     environment:
