@@ -97,3 +97,12 @@ rinha2-back-end-go/
 | Variable | Value |
 |----------|-------|
 | `DATABASE_URL` | `postgres://postgres:postgres@db:5432/rinha?sslmode=disable` |
+
+---
+
+## Contribution Workflow
+
+- **All changes** must go through a branch + PR strategy (never commit directly to main)
+- **PRs are rebase only** — no merge commits
+- **Repo-wide files** (SECURITY.md, CODE_OF_CONDUCT.md, CONTRIBUTING.md, FUNDING.yml, etc.) live in the `.github` repo — do not recreate them in this repository
+- **Use `gh` CLI** for all GitHub operations (repos, PRs, checks, merges, releases)
