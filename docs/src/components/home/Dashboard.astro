@@ -2,33 +2,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-interface Stat {
-  value: string;
-  label: string;
-}
-
-interface ArchCard {
-  title: string;
-  description: string;
-}
-
-const stats: Stat[] = [
-  { value: '47k+', label: 'Target Requests' },
-  { value: '1.5', label: 'Max CPU Limit' },
-  { value: '550MB', label: 'Max RAM Limit' }
-];
-
-const archCards: ArchCard[] = [
-  {
-    title: 'Architecture',
-    description: '2x API Instances, 1x Nginx LB, 1x Postgres Database.'
-  },
-  {
-    title: 'The Challenge',
-    description: 'Build a fictional bank API handling concurrent transactions with high throughput and data consistency.'
-  }
-];
-
 const stressTestMetrics = [
   { value: '47k+', label: 'Requests/Second' },
   { value: '<50ms', label: 'P95 Latency' },
@@ -57,23 +30,28 @@ const recentReports = allReports.slice(0, 8).map(file => ({
 }));
 ---
 
-<section class="dashboard">
-  <div class="stats-grid">
-    {stats.map(stat => (
-      <div class="stat-item">
-        <h3>{stat.value}</h3>
-        <p>{stat.label}</p>
-      </div>
-    ))}
+<section class="specs">
+  <h2>Performance Envelope</h2>
+  <div class="grid-3">
+    <div class="spec-item">
+      <span class="spec-val">47k+</span>
+      <span class="spec-label">Target Valid Requests</span>
+    </div>
+    <div class="spec-item">
+      <span class="spec-val">1.5</span>
+      <span class="spec-label">Max CPU Cores (Total)</span>
+    </div>
+    <div class="spec-item">
+      <span class="spec-val">550</span>
+      <span class="spec-label">Max Memory (MB)</span>
+    </div>
   </div>
 
-  <div class="arch-info">
-    {archCards.map(card => (
-      <div class="arch-card">
-        <h4>{card.title}</h4>
-        <p>{card.description}</p>
-      </div>
-    ))}
+  <div class="arch-list">
+    <div>2x API Instances</div>
+    <div>1x Nginx LB</div>
+    <div>1x Postgres Database</div>
+    <div>Docker Compose Orchestration</div>
   </div>
 </section>
 
