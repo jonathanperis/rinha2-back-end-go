@@ -10,7 +10,27 @@ on:
   workflow_dispatch:
 
 jobs:
+  filter:
+    runs-on: ubuntu-latest
+    outputs:
+      relevant: ${{ steps.changes.outputs.src }}
+    steps:
+      - name: Detect relevant changes
+        uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            src:
+              - 'src/**'
+              - 'go.mod'
+              - 'go.sum'
+              - 'Dockerfile*'
+              - 'docker-compose*.yml'
+              - '.github/workflows/build-check.yml'
+
   setup-build-test:
+    needs: filter
+    if: github.event_name != 'pull_request' || needs.filter.outputs.relevant == 'true'
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -33,7 +53,8 @@ jobs:
           go build -o rinha2-back-end-go .
 
   container-test:
-    needs: setup-build-test
+    needs: [filter, setup-build-test]
+    if: github.event_name != 'pull_request' || needs.filter.outputs.relevant == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -57,4 +78,3 @@ jobs:
             echo "Healthcheck failed with status $STATUS"
             exit 1
           fi
-

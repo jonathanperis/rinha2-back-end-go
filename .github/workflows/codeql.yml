@@ -13,8 +13,26 @@ permissions:
   security-events: write
 
 jobs:
+  filter:
+    runs-on: ubuntu-latest
+    outputs:
+      relevant: ${{ steps.changes.outputs.src }}
+    steps:
+      - name: Detect relevant changes
+        uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            src:
+              - 'src/**'
+              - 'go.mod'
+              - 'go.sum'
+              - '.github/workflows/codeql.yml'
+
   analyze:
     name: Analyze (go)
+    needs: filter
+    if: github.event_name != 'pull_request' || needs.filter.outputs.relevant == 'true'
     runs-on: ubuntu-latest
 
     steps:
@@ -44,4 +62,3 @@ jobs:
         uses: github/codeql-action/analyze@v4
         with:
           category: "/language:go"
-
