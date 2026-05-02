@@ -12,12 +12,14 @@ const {
   description = 'High-performance banking API for the Rinha de Backend challenge. Built with Go 1.25, chi/v5 router, and pgx/v5 connection pool. 221 lines under strict resource constraints (1.5 CPU, 550MB RAM).'
 } = Astro.props;
 
+const pageUrl = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : `https://jonathanperis.github.io${Astro.url.pathname}`;
+
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'SoftwareSourceCode',
   'name': 'Rinha de Backend — Go',
   'description': description,
-  'url': 'https://jonathanperis.github.io/rinha2-back-end-go/',
+  'url': pageUrl,
   'codeRepository': 'https://github.com/jonathanperis/rinha2-back-end-go',
   'programmingLanguage': 'Go',
   'runtimePlatform': 'Go 1.25',
@@ -40,14 +42,14 @@ const jsonLd = {
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
     <meta name="description" content={description} />
     <meta name="keywords" content="Go, Golang, chi, pgx, PostgreSQL, banking API, Rinha de Backend, performance, load testing" />
-    <link rel="canonical" href="https://jonathanperis.github.io/rinha2-back-end-go/" />
+    <link rel="canonical" href={pageUrl} />
     <meta name="theme-color" content="#00ADD8" />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:url" content="https://jonathanperis.github.io/rinha2-back-end-go/" />
+    <meta property="og:url" content={pageUrl} />
     <meta property="og:site_name" content="rinha2-back-end-go" />
     <meta property="og:locale" content="en_US" />
 
