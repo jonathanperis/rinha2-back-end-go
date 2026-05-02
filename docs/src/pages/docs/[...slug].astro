@@ -1,0 +1,179 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+
+const ORDER = ['home', 'architecture', 'challenge', 'ci-cd-pipeline', 'getting-started', 'performance'];
+const SLUG_LABEL: Record<string, string> = {
+  home: 'Home',
+  architecture: 'Architecture',
+  challenge: 'Challenge',
+  'ci-cd-pipeline': 'CI/CD Pipeline',
+  'getting-started': 'Getting Started',
+  performance: 'Performance',
+};
+
+const globResult = import.meta.glob('../../../wiki/*.md', { eager: true });
+
+const pagesBySlug: Record<string, any> = {};
+for (const [path, module] of Object.entries(globResult)) {
+  const fileName = path.split('/').pop()!.replace('.md', '');
+  pagesBySlug[fileName] = module;
+}
+
+const sectionsToRender = ORDER
+  .map(slug => ({ slug, page: pagesBySlug[slug] }))
+  .filter(s => s.page);
+
+export function getStaticPaths() {
+  const order = ['home', 'architecture', 'challenge', 'ci-cd-pipeline', 'getting-started', 'performance'];
+  return [
+    { params: { slug: undefined } },
+    ...order.map(slug => ({ params: { slug } })),
+  ];
+}
+
+const requestedSlug = Astro.params.slug;
+const isRoot = requestedSlug === undefined;
+
+const pageTitle = isRoot ? 'rinha2-back-end-go - Documentation' : `${SLUG_LABEL[requestedSlug] ?? requestedSlug} - rinha2-back-end-go`;
+const base = import.meta.env.BASE_URL;
+const docsBase = base.replace(/\/$/, '') + '/docs';
+const backHomeUrl = base.replace(/\/$/, '') + '/';
+---
+
+<BaseLayout title={pageTitle}>
+  <div class="mobile-header">
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle Menu" aria-controls="sidebar" aria-expanded="false">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <div class="repo-title">rinha2-back-end-go</div>
+  </div>
+
+  <div class="overlay" id="overlay"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h1 class="repo-title">rinha2-back-end-go</h1>
+      <p class="repo-description">
+        Go 1.25 implementation of Rinha de Backend 2024/Q1 — minimal, flat, lightning-fast
+        fictional bank API built for performance under constraints
+      </p>
+      <input type="text" id="searchInput" class="search-box" placeholder="Search documentation..." aria-label="Search documentation">
+    </div>
+    <div class="sidebar-nav-container">
+      <ul>
+        {ORDER.map(slug => {
+          const label = SLUG_LABEL[slug];
+          return (
+            <li>
+              <a href={`${docsBase}/#${slug}`} class="nav-item" data-section={slug}>
+                {label}
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+    <div class="sidebar-footer">
+      <a href={backHomeUrl} class="back-home">← Back to home</a>
+      <a href="https://github.com/jonathanperis/rinha2-back-end-go" target="_blank" rel="noopener noreferrer">View on GitHub</a>
+      <div>Built by Jonathan Peris</div>
+    </div>
+  </aside>
+
+  <div class="content-wrapper">
+    <main class="content" id="mainContent">
+      {sectionsToRender.map(({ slug, page: wikiPage }) => {
+        const Content = wikiPage.default ?? wikiPage;
+        return (
+          <section id={slug} class="doc-section">
+            <Content />
+          </section>
+        );
+      })}
+    </main>
+  </div>
+
+  {requestedSlug && <script is:inline define:vars={{ slug: requestedSlug }}>window.__docsSlug = slug;</script>}
+
+  <script is:inline>
+    document.addEventListener('DOMContentLoaded', () => {
+      const menuToggle = document.getElementById('menuToggle');
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('overlay');
+
+      function toggleMenu() {
+        const isOpen = sidebar.classList.toggle('open');
+        overlay.classList.toggle('open');
+        if (menuToggle) menuToggle.setAttribute('aria-expanded', String(isOpen));
+      }
+
+      if (menuToggle) menuToggle.addEventListener('click', toggleMenu);
+      if (overlay) overlay.addEventListener('click', toggleMenu);
+
+      // Auto-scroll to target section from route param or hash
+      const targetSlug = window.__docsSlug;
+      const hash = window.location.hash;
+      const sectionId = targetSlug || (hash && hash.length > 1 ? hash.slice(1) : null);
+      if (sectionId) {
+        const target = document.getElementById(sectionId);
+        if (target) {
+          setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+        }
+      }
+
+      const sections = document.querySelectorAll('section.doc-section');
+      const navItems = document.querySelectorAll('.nav-item');
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const sectionId = entry.target.id;
+            navItems.forEach(item => {
+              item.classList.toggle('active', item.dataset.section === sectionId);
+              if (item.dataset.section === sectionId) {
+                item.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+              }
+            });
+          }
+        });
+      }, { root: null, rootMargin: '-80px 0px -60% 0px', threshold: 0 });
+
+      sections.forEach(section => observer.observe(section));
+
+      navItems.forEach(item => {
+        item.addEventListener('click', () => {
+          if (window.innerWidth <= 768) toggleMenu();
+        });
+      });
+
+      const searchInput = document.getElementById('searchInput');
+      if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+          const query = e.target.value.toLowerCase();
+
+          if (query === '') {
+            sections.forEach(s => s.classList.remove('hidden-section'));
+            navItems.forEach(item => item.parentElement.style.display = '');
+            return;
+          }
+
+          sections.forEach(section => {
+            const text = section.textContent?.toLowerCase() ?? '';
+            const navItem = document.querySelector(`.nav-item[data-section="${section.id}"]`);
+            const li = navItem ? navItem.parentElement : null;
+
+            if (text.includes(query)) {
+              section.classList.remove('hidden-section');
+              if (li) li.style.display = '';
+            } else {
+              section.classList.add('hidden-section');
+              if (li) li.style.display = 'none';
+            }
+          });
+        });
+      }
+    });
+  </script>
+</BaseLayout>
