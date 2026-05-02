@@ -113,9 +113,9 @@ const backHomeUrl = base.replace(/\/$/, '') + '/';
       if (overlay) overlay.addEventListener('click', toggleMenu);
 
       // Auto-scroll to target section from route param or hash
-      const targetSlug = window.__docsSlug;
       const hash = window.location.hash;
-      const sectionId = targetSlug || (hash && hash.length > 1 ? hash.slice(1) : null);
+      const targetSlug = window.__docsSlug;
+      const sectionId = (hash && hash.length > 1 ? hash.slice(1) : null) ?? targetSlug;
       if (sectionId) {
         const target = document.getElementById(sectionId);
         if (target) {
