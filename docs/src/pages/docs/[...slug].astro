@@ -41,7 +41,8 @@ const backHomeUrl = base.replace(/\/$/, '') + '/';
 ---
 
 <BaseLayout title={pageTitle}>
-  <div class="mobile-header">
+  <div class="docs-layout">
+    <div class="mobile-header">
     <button class="menu-toggle" id="menuToggle" aria-label="Toggle Menu" aria-controls="sidebar" aria-expanded="false">
       <span></span>
       <span></span>
@@ -93,6 +94,7 @@ const backHomeUrl = base.replace(/\/$/, '') + '/';
         );
       })}
     </main>
+  </div>
   </div>
 
   {requestedSlug && <script is:inline define:vars={{ slug: requestedSlug }}>window.__docsSlug = slug;</script>}
