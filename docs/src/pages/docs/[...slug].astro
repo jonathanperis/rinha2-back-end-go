@@ -67,7 +67,7 @@ const backHomeUrl = base.replace(/\/$/, '') + '/';
         Go 1.25 implementation of Rinha de Backend 2024/Q1 — minimal, flat, lightning-fast
         fictional bank API built for performance under constraints
       </p>
-      <input type="text" id="searchInput" class="search-box" placeholder="Search documentation..." aria-label="Search documentation">
+      <input type="text" id="searchInput" class="search-box" placeholder="Search documentation..." aria-label="Search documentation" hidden={!isRoot}>
     </div>
     <div class="sidebar-nav-container">
       <ul>
