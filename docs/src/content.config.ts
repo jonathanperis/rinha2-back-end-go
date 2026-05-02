@@ -1,3 +1,2 @@
-import type { CollectionEntry } from 'astro:content';
-
-export {};
+// No content collections used — wiki files loaded via import.meta.glob() in routes.
+export const collections = {};

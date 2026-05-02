@@ -1,0 +1,124 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import DocPageIsland from '@/components/docs/DocPageIsland';
+import type { MarkdownInstance } from 'astro';
+
+/* Load all wiki markdown files dynamically */
+const allWikiPages = Object.values(
+    import.meta.glob<MarkdownInstance<Record<string, any>>>('../../../wiki/*.md', { eager: true })
+);
+
+/* Build a lookup: filename slug → wiki page */
+const wikiBySlug: Record<string, MarkdownInstance<Record<string, any>>> = {};
+for (const page of allWikiPages) {
+    const fileName = page.file.split('/').pop()!.replace(/\.md$/, '');
+    wikiBySlug[fileName] = page;
+}
+
+/* Ordered section list matching DocPageIsland NAV_ITEMS */
+const SECTION_ORDER = ['home', 'architecture', 'challenge', 'ci-cd-pipeline', 'getting-started', 'performance'];
+
+/* Resolve which sections to render */
+const { slug } = Astro.params;
+
+let sectionsToRender: { slug: string; page: MarkdownInstance<Record<string, any>> }[] = [];
+
+if (!slug) {
+    /* No slug → render all sections in order (single-page docs) */
+    sectionsToRender = SECTION_ORDER
+        .map((s) => ({ slug: s, page: wikiBySlug[s] }))
+        .filter((s) => s.page !== undefined);
+} else {
+    /* Specific slug → render just that section */
+    const page = wikiBySlug[slug];
+    if (!page) return Astro.redirect(`${import.meta.env.BASE_URL}/docs/`);
+    sectionsToRender = [{ slug, page }];
+}
+
+/* Generate static paths: root (undefined slug) + one per wiki file */
+export function getStaticPaths() {
+    const order = ['home', 'architecture', 'challenge', 'ci-cd-pipeline', 'getting-started', 'performance'];
+    return [
+        { params: { slug: undefined } },
+        ...order.map((s) => ({ params: { slug: s } })),
+    ];
+}
+
+/* Page title: frontmatter → humanized slug → "Documentation" */
+function humanizeSlug(s: string): string {
+    return s
+        .split('-')
+        .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+        .join(' ');
+}
+
+const firstPage = sectionsToRender[0]?.page;
+const pageTitle = firstPage?.frontmatter?.title ?? (slug ? humanizeSlug(slug) : 'Documentation');
+---
+
+<BaseLayout title={`${pageTitle} - rinha2-back-end-go`}>
+    <div class="docs-layout">
+        <!-- Interactive island: sidebar + search + scrollspy -->
+        <DocPageIsland client:load />
+
+        <!-- Static content: markdown sections rendered via <Content /> -->
+        <div class="content-wrapper">
+            <main class="content" id="mainContent">
+                {sectionsToRender.map(({ slug: sectionSlug, page: wikiPage }) => (
+                    <section id={sectionSlug} class="doc-section">
+                        <wikiPage.Content />
+                    </section>
+                ))}
+            </main>
+        </div>
+    </div>
+
+    {/* Inject route slug for auto-scroll on direct route access */}
+    {slug && <script is:inline define:vars={{ slug }}>window.__docsSlug = slug;</script>}
+
+    {/* Search filter — plain inline script, no React hydration */}
+    <script is:inline>
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('searchInput');
+            if (!searchInput) return;
+
+            const sections = document.querySelectorAll('section.doc-section');
+            const navItems = document.querySelectorAll('.nav-item');
+
+            searchInput.addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase();
+
+                if (query === '') {
+                    sections.forEach(s => s.classList.remove('hidden-section'));
+                    navItems.forEach(item => item.parentElement.style.display = '');
+                    return;
+                }
+
+                sections.forEach(section => {
+                    const text = section.textContent?.toLowerCase() ?? '';
+                    const navItem = document.querySelector(`.nav-item[href*="#${section.id}"]`);
+                    const li = navItem ? navItem.parentElement : null;
+
+                    if (text.includes(query)) {
+                        section.classList.remove('hidden-section');
+                        if (li) li.style.display = '';
+                    } else {
+                        section.classList.add('hidden-section');
+                        if (li) li.style.display = 'none';
+                    }
+                });
+            });
+
+            /* Auto-scroll to target section from route param or hash */
+            const targetSlug = window.__docsSlug;
+            const hash = window.location.hash;
+            const sectionId = targetSlug || (hash && hash.length > 1 ? hash.slice(1) : null);
+            if (sectionId) {
+                const target = document.getElementById(sectionId);
+                if (target) {
+                    setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+                }
+            }
+        });
+    </script>
+</BaseLayout>

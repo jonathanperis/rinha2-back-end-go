@@ -6,8 +6,6 @@ export interface NavItem {
 interface SidebarProps {
     menuOpen: boolean;
     toggleMenu: () => void;
-    searchQuery: string;
-    onSearchChange: (v: string) => void;
     items: NavItem[];
     activeSection: string;
 }
@@ -15,8 +13,6 @@ interface SidebarProps {
 export default function Sidebar({
     menuOpen,
     toggleMenu,
-    searchQuery,
-    onSearchChange,
     items,
     activeSection,
 }: SidebarProps) {
@@ -31,10 +27,10 @@ export default function Sidebar({
                 </p>
                 <input
                     type="text"
+                    id="searchInput"
                     className="search-box"
                     placeholder="Search documentation..."
-                    value={searchQuery}
-                    onChange={(e) => onSearchChange(e.target.value)}
+                    aria-label="Search documentation"
                 />
             </div>
             <div className="sidebar-nav-container">
@@ -42,7 +38,7 @@ export default function Sidebar({
                     {items.map((item) => (
                         <li key={item.id}>
                             <a
-                                href={`#${item.id}`}
+                                href={`${base}/docs/#${item.id}`}
                                 className={`nav-item${activeSection === item.id ? ' active' : ''}`}
                                 onClick={() => {
                                     if (window.innerWidth <= 768) toggleMenu();
