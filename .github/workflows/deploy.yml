@@ -15,4 +15,4 @@ jobs:
     uses: jonathanperis/.github/.github/workflows/pages-docs-deploy.yml@fb477c55fc80195745b4e1a362e23f5b174f7a23 # main
     secrets: inherit
     with:
-      package-manager: npm
+      package-manager: bun
