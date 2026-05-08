@@ -1,3 +1,1 @@
-import type { CollectionEntry } from 'astro:content';
-
-export {};
+export const collections = {};
