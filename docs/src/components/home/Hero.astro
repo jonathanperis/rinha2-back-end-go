@@ -1,21 +1,47 @@
 ---
+const stack = ['Go 1.25', 'chi/v5', 'pgx/v5', 'PostgreSQL', 'NGINX'];
+
+const proofItems = [
+  { label: 'Challenge', value: 'Rinha 2024/Q1' },
+  { label: 'Resource cap', value: '1.5 CPU / 550MB' },
+  { label: 'Shape', value: '2 APIs + LB + Postgres' },
+];
 ---
 
-<section class="hero">
-  <h1>Less is More.<br><span>Except Error Handling.</span></h1>
-  <p class="tagline">
-    Go Implementation of Rinha de Backend 2024/Q1. Delivering extreme throughput and low latency under strict resource constraints for a fictional bank API.
-  </p>
+<section class="hero" aria-labelledby="hero-title">
+  <div class="hero-copy">
+    <p class="eyebrow">Go banking API under contest constraints</p>
+    <h1 id="hero-title">
+      Less is More.
+      <span>Except Error Handling.</span>
+    </h1>
+    <p class="tagline">
+      A compact Go implementation of Rinha de Backend 2024/Q1, tuned for concurrent banking transactions with chi, pgx, PostgreSQL stored procedures, and NGINX load balancing.
+    </p>
 
-  <div class="badges">
-    <span class="badge">Go 1.22</span>
-    <span class="badge">Nginx</span>
-    <span class="badge">PostgreSQL</span>
-    <span class="badge">pgxpool</span>
+    <ul class="badges" aria-label="Technology stack">
+      {stack.map(item => <li class="badge">{item}</li>)}
+    </ul>
+
+    <div class="ctas" aria-label="Primary links">
+      <a href="./docs/" class="btn btn-primary">Read docs</a>
+      <a href="./reports/" class="btn btn-outline">Latest reports</a>
+      <a href="https://github.com/jonathanperis/rinha2-back-end-go" class="btn btn-ghost">Inspect code</a>
+    </div>
   </div>
 
-  <div class="ctas">
-    <a href="./docs/" class="btn btn-primary">View Documentation &rarr;</a>
-    <a href="https://github.com/jonathanperis/rinha2-back-end-go" class="btn btn-outline">View on GitHub &rarr;</a>
-  </div>
+  <aside class="proof-rail" aria-label="Benchmark context">
+    <p class="proof-kicker">Validated envelope</p>
+    <ul>
+      {proofItems.map(item => (
+        <li>
+          <span>{item.label}</span>
+          <strong>{item.value}</strong>
+        </li>
+      ))}
+    </ul>
+    <a href="https://github.com/jonathanperis/rinha2-back-end-go/actions/workflows/main-release.yml" class="proof-link">
+      CI stress-test workflow
+    </a>
+  </aside>
 </section>
