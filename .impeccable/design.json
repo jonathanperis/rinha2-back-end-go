@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-05-16T22:12:00Z",
+  "title": "Design System: rinha2-back-end-go",
+  "extensions": {
+    "colorMeta": {
+      "deep-teal-bg": {
+        "role": "neutral",
+        "displayName": "Deep Teal Console",
+        "canonical": "#0c1f1f",
+        "tonalRamp": ["oklch(15% 0.025 195)", "oklch(23% 0.03 195)", "oklch(31% 0.035 195)", "oklch(42% 0.04 195)", "oklch(55% 0.035 195)", "oklch(68% 0.025 195)", "oklch(82% 0.015 195)", "oklch(94% 0.008 195)"]
+      },
+      "teal-surface": {
+        "role": "neutral",
+        "displayName": "Teal Steel Surface",
+        "canonical": "#0f2e2e",
+        "tonalRamp": ["oklch(17% 0.03 195)", "oklch(26% 0.035 195)", "oklch(35% 0.04 195)", "oklch(46% 0.04 195)", "oklch(58% 0.035 195)", "oklch(70% 0.025 195)", "oklch(84% 0.015 195)", "oklch(95% 0.008 195)"]
+      },
+      "go-cyan": {
+        "role": "primary",
+        "displayName": "Go Instrument Cyan",
+        "canonical": "#00ADD8",
+        "tonalRamp": ["oklch(20% 0.07 220)", "oklch(30% 0.09 220)", "oklch(42% 0.11 220)", "oklch(55% 0.13 220)", "oklch(68% 0.12 220)", "oklch(78% 0.09 220)", "oklch(88% 0.05 220)", "oklch(96% 0.02 220)"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Mono Display", "purpose": "Hero claims and dominant section statements." },
+      "body": { "displayName": "Sans Body", "purpose": "Readable technical explanation copy, paired with mono labels and metrics." },
+      "label": { "displayName": "Instrument Label", "purpose": "Badges, metric labels, navigation, and metadata." }
+    },
+    "shadows": [
+      { "name": "signal-glow", "value": "0 0 16px rgba(0, 173, 216, 0.18)", "purpose": "Active focus, hover, or one signature metric." },
+      { "name": "panel-lift", "value": "0 12px 32px rgba(0, 0, 0, 0.20)", "purpose": "Sparing hover elevation for report previews." }
+    ],
+    "motion": [
+      { "name": "state-ease", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Fast ease-out state transitions." },
+      { "name": "reduced-motion", "value": "@media (prefers-reduced-motion: reduce)", "purpose": "Disable ambient particles, drifting backgrounds, and entrance animations." }
+    ],
+    "breakpoints": [
+      { "name": "mobile", "value": "640px" },
+      { "name": "tablet", "value": "768px" },
+      { "name": "desktop", "value": "1024px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Main route to docs or benchmark evidence.",
+      "html": "<button class=\"ds-btn-primary\">VIEW DOCUMENTATION</button>",
+      "css": ".ds-btn-primary { background: #00ADD8; color: #0c1f1f; border: 1px solid #00ADD8; border-radius: 4px; padding: 1rem 2rem; font-family: 'Fira Code', ui-monospace, monospace; font-weight: 700; text-transform: uppercase; letter-spacing: 0.02em; transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 180ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 16px rgba(0, 173, 216, 0.18); } .ds-btn-primary:focus-visible { outline: 2px solid #5DC9E2; outline-offset: 3px; }"
+    },
+    {
+      "name": "Metric Card",
+      "kind": "card",
+      "refersTo": "metric-card",
+      "description": "Evidence-first metric container for benchmark claims.",
+      "html": "<article class=\"ds-metric-card\"><strong>47k+</strong><span>Target valid requests</span></article>",
+      "css": ".ds-metric-card { background: #0f2e2e; color: #e0f5f8; border: 1px solid rgba(0, 173, 216, 0.15); border-radius: 12px; padding: 1.5rem; font-family: 'Fira Code', ui-monospace, monospace; display: grid; gap: 0.35rem; } .ds-metric-card strong { color: #00ADD8; font-size: 2rem; line-height: 1; } .ds-metric-card span { color: #7dd3e8; font-size: 0.875rem; }"
+    },
+    {
+      "name": "Report Link",
+      "kind": "custom",
+      "refersTo": "report-link",
+      "description": "Historical benchmark proof artifact.",
+      "html": "<a class=\"ds-report-link\" href=\"#\"><span>2026-04-01</span><small>19:13</small></a>",
+      "css": ".ds-report-link { display: grid; gap: 0.25rem; background: #0f2e2e; color: #e0f5f8; border: 1px solid rgba(0, 173, 216, 0.15); border-radius: 8px; padding: 0.875rem 1rem; text-decoration: none; font-family: 'Fira Code', ui-monospace, monospace; transition: border-color 180ms cubic-bezier(0.16, 1, 0.3, 1), transform 180ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-report-link span { color: #5DC9E2; font-size: 0.8rem; } .ds-report-link small { color: #7dd3e8; font-size: 0.75rem; } .ds-report-link:hover { border-color: #00ADD8; transform: translateY(-1px); } .ds-report-link:focus-visible { outline: 2px solid #5DC9E2; outline-offset: 3px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Instrumented Restraint",
+    "overview": "The site should feel like a benchmark console that learned just enough art direction to be memorable. It is dark, teal, compact, and mechanical, but not theatrical. The best version keeps the terminal-performance mood while removing decorative excess, tightening proof hierarchy, and turning archived reports into a credibility asset.",
+    "keyCharacteristics": [
+      "Dark teal base with Go cyan as a precise instrumentation color.",
+      "Mono-forward typography, used with stronger hierarchy and better body readability.",
+      "Tonal layering and thin borders instead of heavy shadows or glass effects.",
+      "Metrics tied to evidence, dates, resource constraints, and report links.",
+      "Minimal motion, only when it clarifies state or directs attention."
+    ],
+    "rules": [
+      { "name": "The Instrument Rule", "body": "Cyan is an instrument reading. It marks actions, values, focus, and status. It does not decorate empty space.", "section": "colors" },
+      { "name": "The No Pure Extremes Rule", "body": "Do not use pure #000 or #fff. Keep darks and lights tinted toward the project teal.", "section": "colors" },
+      { "name": "The Mono With Purpose Rule", "body": "Monospace is allowed because this is a developer benchmark site. It still needs typographic contrast through size, weight, color, and line length.", "section": "typography" },
+      { "name": "The Flat Until Touched Rule", "body": "Surfaces rest flat. They lift only when a user interacts or when a metric needs explicit priority.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do keep the Go teal/cyan identity, but use cyan only for action, proof, focus, and state.",
+      "Do tie every major performance claim to a report, CI run, or explicit workload context.",
+      "Do use semantic lists for badges, metrics, architecture items, and historical reports.",
+      "Do include prefers-reduced-motion handling for ambient and entrance animations.",
+      "Do preserve the developer-native wit when it is specific and concise."
+    ],
+    "donts": [
+      "Don't use gradient text. It is prohibited on this project.",
+      "Don't use decorative glassmorphism, floating particles, or glows as default atmosphere.",
+      "Don't repeat generic metric cards without adding context or proof.",
+      "Don't use emoji as section-label scaffolding.",
+      "Don't present vague performance claims without benchmark context.",
+      "Don't use thick side-stripe borders as accents.",
+      "Don't let terminal styling become cosplay. The code and benchmark evidence are the identity."
+    ]
+  }
+}

@@ -3,93 +3,147 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const stressTestMetrics = [
-  { value: '47k+', label: 'Requests/Second' },
-  { value: '<50ms', label: 'P95 Latency' },
-  { value: '99.9%', label: 'Success Rate' }
+  { value: '47k+', label: 'target valid requests', context: 'challenge scoring target' },
+  { value: '<50ms', label: 'P95 latency', context: 'latest published target' },
+  { value: '99.9%', label: 'success rate', context: 'expected valid-run floor' },
+];
+
+const architecture = [
+  { name: 'NGINX', detail: 'least_conn load balancer on :9999' },
+  { name: 'API x2', detail: 'two Go/chi instances behind the proxy' },
+  { name: 'PostgreSQL', detail: 'stored procedures keep balance updates atomic' },
+  { name: 'k6', detail: 'archived CI stress-test reports' },
 ];
 
 const reportsDir = path.join(process.cwd(), 'public/reports');
-const allReports = fs.readdirSync(reportsDir)
-  .filter(f => f.endsWith('.html'))
-  .sort()
-  .reverse();
+const allReports = fs.existsSync(reportsDir)
+  ? fs.readdirSync(reportsDir).filter(f => f.endsWith('.html')).sort().reverse()
+  : [];
 
 function parseReportMeta(filename: string) {
   const match = filename.match(/(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/);
-  if (!match) return { date: filename, time: '' };
+  if (!match) return { date: filename, time: '', label: 'archived run' };
   const [, year, month, day, hour, minute] = match;
   return {
     date: `${year}-${month}-${day}`,
     time: `${hour}:${minute}`,
+    label: 'k6 stress report',
   };
 }
 
-const recentReports = allReports.slice(0, 8).map(file => ({
-  file,
-  ...parseReportMeta(file),
-}));
+const latestReport = allReports[0] ? { file: allReports[0], ...parseReportMeta(allReports[0]) } : null;
+const recentReports = allReports.slice(0, 6).map(file => ({ file, ...parseReportMeta(file) }));
+const curatedReports = [
+  latestReport && { title: 'Latest archived run', ...latestReport },
+  allReports[1] && { title: 'Previous run', file: allReports[1], ...parseReportMeta(allReports[1]) },
+  allReports[2] && { title: 'Recent baseline', file: allReports[2], ...parseReportMeta(allReports[2]) },
+].filter(Boolean);
 ---
 
-<section class="specs">
-  <h2>Performance Envelope</h2>
-  <div class="grid-3">
-    <div class="spec-item">
-      <span class="spec-val">47k+</span>
-      <span class="spec-label">Target Valid Requests</span>
-    </div>
-    <div class="spec-item">
-      <span class="spec-val">1.5</span>
-      <span class="spec-label">Max CPU Cores (Total)</span>
-    </div>
-    <div class="spec-item">
-      <span class="spec-val">550</span>
-      <span class="spec-label">Max Memory (MB)</span>
-    </div>
+<section class="specs" aria-labelledby="envelope-title">
+  <div class="section-heading">
+    <p class="eyebrow">Performance envelope</p>
+    <h2 id="envelope-title">The constraint is the architecture.</h2>
+    <p>
+      The implementation is intentionally small: two Go API instances, one NGINX balancer, and one PostgreSQL database sharing the challenge’s total CPU and memory budget.
+    </p>
   </div>
 
-  <div class="arch-list">
-    <div>2x API Instances</div>
-    <div>1x Nginx LB</div>
-    <div>1x Postgres Database</div>
-    <div>Docker Compose Orchestration</div>
-  </div>
+  <ul class="grid-3" aria-label="Challenge constraints">
+    <li class="spec-item">
+      <span class="spec-val">47k+</span>
+      <span class="spec-label">target valid requests</span>
+    </li>
+    <li class="spec-item">
+      <span class="spec-val">1.5</span>
+      <span class="spec-label">max CPU cores total</span>
+    </li>
+    <li class="spec-item">
+      <span class="spec-val">550</span>
+      <span class="spec-label">max memory in MB</span>
+    </li>
+  </ul>
+
+  <ol class="arch-list" aria-label="Request flow">
+    {architecture.map(item => (
+      <li>
+        <strong>{item.name}</strong>
+        <span>{item.detail}</span>
+      </li>
+    ))}
+  </ol>
 </section>
 
-<section class="stress-tests">
-  <h3>⚡ Stress Test Results</h3>
-  <p class="stress-intro">
-    Validated under extreme load conditions using k6. The system maintains stable performance
-    even when processing thousands of concurrent banking transactions.
-  </p>
-
-  <div class="stress-metrics">
-    {stressTestMetrics.map(metric => (
-      <div class="stress-metric">
-        <span class="metric-value">{metric.value}</span>
-        <span class="metric-label">{metric.label}</span>
-      </div>
-    ))}
+<section class="stress-tests" aria-labelledby="stress-title">
+  <div class="section-heading centered">
+    <p class="eyebrow">Benchmark evidence</p>
+    <h3 id="stress-title">Stress-test results stay attached to reports.</h3>
+    <p class="stress-intro">
+      The headline numbers are treated as evidence, not ornament. Use the archived reports and CI workflow to inspect each run instead of trusting a static badge.
+    </p>
   </div>
 
+  <ul class="stress-metrics" aria-label="Stress-test headline metrics">
+    {stressTestMetrics.map(metric => (
+      <li class="stress-metric">
+        <span class="metric-value">{metric.value}</span>
+        <span class="metric-label">{metric.label}</span>
+        <small>{metric.context}</small>
+      </li>
+    ))}
+  </ul>
+
   <div class="stress-links">
+    {latestReport && (
+      <a href={`./reports/${latestReport.file}`} class="stress-link">
+        Latest report: {latestReport.date} {latestReport.time}
+      </a>
+    )}
     <a href="https://github.com/jonathanperis/rinha2-back-end-go/actions/workflows/main-release.yml" class="stress-link" target="_blank" rel="noopener noreferrer">
-      <span>📊</span> View CI/CD Stress Tests
+      CI stress tests
     </a>
-    <a href="./docs/" class="stress-link">
-      <span>📖</span> Documentation
+    <a href="./docs/performance/" class="stress-link">
+      Performance notes
     </a>
   </div>
 
   <div class="reports-section">
-    <h4>📈 Historical Reports</h4>
-    <div class="reports-grid">
-      {recentReports.map(report => (
-        <a href={`./reports/${report.file}`} class="report-link">
-          <span class="report-date">{report.date}</span>
-          <span class="report-time">{report.time}</span>
-        </a>
-      ))}
+    <div class="section-heading compact centered">
+      <p class="eyebrow">Report archive</p>
+      <h4>Recent proof artifacts</h4>
     </div>
-    <p class="reports-note">{allReports.length} stress test runs archived • <a href="./reports/">View all reports →</a></p>
+
+    {curatedReports.length > 0 ? (
+      <ul class="reports-featured" aria-label="Featured stress-test reports">
+        {curatedReports.map(report => (
+          <li>
+            <a href={`./reports/${report.file}`} class="report-feature">
+              <span class="report-title">{report.title}</span>
+              <strong>{report.date}</strong>
+              <small>{report.time} · {report.label}</small>
+            </a>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p class="empty-reports">No archived stress-test reports were found in this build.</p>
+    )}
+
+    {recentReports.length > 0 && (
+      <ul class="reports-grid" aria-label="Recent stress-test reports">
+        {recentReports.map(report => (
+          <li>
+            <a href={`./reports/${report.file}`} class="report-link">
+              <span class="report-date">{report.date}</span>
+              <span class="report-time">{report.time}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    )}
+
+    <p class="reports-note">
+      {allReports.length} stress test runs archived · <a href="./reports/">View all reports</a>
+    </p>
   </div>
 </section>

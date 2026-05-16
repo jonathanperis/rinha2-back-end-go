@@ -6,10 +6,11 @@ interface Props {
 const { title = 'rinha2-go' } = Astro.props;
 ---
 
-<nav>
-  <div class="logo">{title}</div>
+<nav aria-label="Primary navigation">
+  <a class="logo" href="./" aria-label="rinha2-go home">{title}</a>
   <div class="nav-links">
-    <a href="https://github.com/jonathanperis/rinha2-back-end-go">GitHub</a>
     <a href="./docs/">Docs</a>
+    <a href="./reports/">Reports</a>
+    <a href="https://github.com/jonathanperis/rinha2-back-end-go">GitHub</a>
   </div>
 </nav>
