@@ -8,12 +8,12 @@ High-performance banking API built with Go/chi for the Rinha de Backend challeng
 
 | Technology | Purpose |
 |-----------|---------|
-| Go 1.25 | Language |
+| Go 1.25.0 | Language |
 | chi/v5 | Lightweight HTTP router |
 | pgx/v5 | PostgreSQL driver with connection pooling |
 | PostgreSQL | Database with stored procedures |
 | NGINX | Load balancer (least_conn) |
-| Docker | Multi-stage builds (golang:1.25-alpine → alpine:3.23) |
+| Docker | Multi-stage builds (golang:1.25-alpine3.21 → alpine:3.23) |
 | k6 | Load testing (shared suite) |
 
 ---
@@ -73,7 +73,7 @@ rinha2-back-end-go/
 ├── src/WebApi/
 │   ├── main.go          # Complete API (221 lines)
 │   ├── go.mod / go.sum  # Dependencies (chi/v5, pgx/v5)
-│   └── Dockerfile        # Multi-stage: golang:1.25-alpine → alpine:3.23
+│   └── Dockerfile        # Multi-stage: golang:1.25-alpine3.21 → alpine:3.23
 ├── docker-entrypoint-initdb.d/
 │   └── rinha.dump.sql    # Schema + stored procedures + seed data
 ├── docker-compose.yml    # Dev stack with observability
@@ -86,8 +86,9 @@ rinha2-back-end-go/
 
 ## CI/CD
 
-- **PR:** Go build + Docker health check
-- **Main:** Build + Multi-platform Docker push (amd64/arm64) to GHCR + k6 load test + GitHub Pages report
+- **PR:** Path-filtered Go build, Docker health check, and CodeQL for relevant source changes
+- **Main:** Build + multi-platform Docker push (amd64/arm64) to GHCR, k6 load test, CodeQL, and GitHub Pages deploy
+- **Docs:** `deploy.yml` builds the Astro documentation site with Bun
 - **Image:** `ghcr.io/jonathanperis/rinha2-back-end-go:latest`
 
 ---
@@ -108,3 +109,9 @@ rinha2-back-end-go/
 - **PRs are rebase only** — no merge commits
 - **Repo-wide files** (SECURITY.md, CODE_OF_CONDUCT.md, CONTRIBUTING.md, FUNDING.yml, etc.) live in the `.github` repo — do not recreate them in this repository
 - **Use `gh` CLI** for all GitHub operations (repos, PRs, checks, merges, releases)
+
+---
+
+## Standardized Agent Instrumentation
+
+This repository uses the standardized `AGENTS.md` and `.agents/` locations for harness-readable project instructions and memory. Keep future agent guidance in the standardized AGENTS paths only.
