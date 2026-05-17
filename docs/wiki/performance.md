@@ -4,15 +4,18 @@
 
 The project targets the official Rinha de Backend 2024/Q1 limit of **1.5 CPU** and **550MB RAM** across the challenge-counted stack.
 
-| Metric | Limit | Documented result | Margin |
-|--------|-------|-------------------|--------|
-| RAM | 550MB | ~250MB | About 60% below the limit |
-| Response time | Challenge-sensitive | < 800ms | All documented requests under the headline threshold |
-| API replicas | 2 | 2 | Balanced by NGINX `least_conn` |
+| Metric | Limit / shape | Current source-backed value |
+|--------|---------------|-----------------------------|
+| RAM | 550MB | Compose limits total 550MB: API x2 100MB, NGINX 20MB, DB 330MB. |
+| CPU | 1.5 | Compose limits total 1.5: API x2 0.4, NGINX 0.2, DB 0.5. |
+| API replicas | Challenge implementation choice | 2 Go containers balanced by NGINX `least_conn`. |
+| Reports | Historical evidence | 34 committed k6 HTML reports under `docs/public/reports/`. |
+
+Older reports and homepage copy may mention headline latency/resource observations from specific runs. Treat those as historical evidence, not a timeless guarantee: benchmark numbers vary by host, runner, image version, and workload timing.
 
 ## Published reports
 
-Stress-test HTML reports are published with the static site under [`/reports/`](../reports/). Use them as the durable evidence trail for individual runs rather than treating a single number as universal performance truth.
+Stress-test HTML reports are published with the static site under [`/reports/`](../../reports/). Use them as the durable evidence trail for individual runs rather than treating a single number as universal performance truth.
 
 ## How to read the results
 
@@ -33,7 +36,7 @@ Stress-test HTML reports are published with the static site under [`/reports/`](
 
 ```bash
 docker compose up nginx -d --build
-docker compose up k6
+docker compose up k6 --build --force-recreate
 ```
 
-For development dashboards, start the observability services too and keep the k6 service in development mode. For publishable evidence, prefer the generated HTML reports that are archived by the site.
+For development dashboards, use the root compose file and its observability services. For publishable evidence, prefer the generated HTML reports archived by the site or uploaded by `main-release.yml`.
