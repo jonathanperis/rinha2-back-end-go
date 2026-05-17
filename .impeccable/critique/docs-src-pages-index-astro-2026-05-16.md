@@ -39,7 +39,7 @@ A delegated automated pass later returned no findings in its environment, so tre
 ### Source-backed issues
 
 - Gradient text in `.hero h1` at `docs/src/styles/globals.css:228-237` violates the loaded design law.
-- Go version mismatch: `Hero.astro` says Go 1.22; `index.astro`, `BaseLayout.astro`, and `CLAUDE.md` say Go 1.25.
+- Go version mismatch: `Hero.astro` says Go 1.22; `index.astro`, `BaseLayout.astro`, and `AGENTS.md` say Go 1.25.
 - Landing animations have no `prefers-reduced-motion` accommodation in `globals.css`.
 - Hover states exist without matching explicit `:focus-visible` rules for primary nav, CTAs, stress links, report links, and footer links.
 - Repeated content is visually grouped but not semantically represented as lists: badges, architecture items, stress metrics, and reports.
