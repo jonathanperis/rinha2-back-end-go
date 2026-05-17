@@ -2,22 +2,41 @@
 
 ## Rinha de Backend 2024/Q1
 
-Rinha de Backend is a Brazilian backend programming challenge. The 2024/Q1 edition models a tiny financial API: five predefined clients start with credit limits and balances, and the service must accept concurrent credits, debits, and statement reads under a strict container resource cap.
+Rinha de Backend is a Brazilian backend programming challenge. The 2024/Q1 edition models a tiny financial API: five predefined clients start with credit limits and zero balances, and the service must accept concurrent credits, debits, and statement reads under a strict container resource cap.
 
 ## Required API contract
 
-| Endpoint | Method | Expected behavior |
-|----------|--------|-------------------|
-| `/clientes/{id}/transacoes` | `POST` | Submit a debit (`d`) or credit (`c`) transaction for clients 1 through 5. |
-| `/clientes/{id}/extrato` | `GET` | Return current balance, credit limit, statement timestamp, and recent transactions. |
+| Endpoint | Method | Expected behavior | Current implementation note |
+|----------|--------|-------------------|-----------------------------|
+| `/clientes/{id}/transacoes` | `POST` | Submit a debit (`d`) or credit (`c`) transaction for clients 1 through 5. | Implemented in `postTransacaoHandler`; returns `id`, `limite`, and updated `saldo`. |
+| `/clientes/{id}/extrato` | `GET` | Return current balance, credit limit, statement timestamp, and recent transactions. | Implemented in `getExtratoHandler`; returns `saldo` and up to 10 `ultimas_transacoes`. |
+
+The repository also exposes `GET /healthz` for compose/CI health checks; it is not part of the original banking contract.
+
+## Seeded clients
+
+| Client | Limit |
+|---:|---:|
+| 1 | 100000 |
+| 2 | 80000 |
+| 3 | 1000000 |
+| 4 | 10000000 |
+| 5 | 500000 |
+
+The same IDs and limits appear in both the Go `clientes` map and the SQL seed data.
 
 ## Validation rules
 
-- Client IDs outside the seeded range should fail.
-- Transaction values must be positive integers.
-- Transaction type is constrained to debit (`d`) or credit (`c`).
-- Descriptions are short strings and must satisfy the official challenge limits.
-- Debits cannot exceed the current balance plus the configured client limit.
+Current validation is split between Go and PostgreSQL:
+
+- Non-integer client IDs return `400` from the Go handlers.
+- Client IDs outside 1–5 return `404` before the database call.
+- Invalid JSON transaction bodies return `400`.
+- `tipo` must be exactly debit (`d`) or credit (`c`).
+- `descricao` must be non-empty and at most 10 characters.
+- `valor` must be greater than zero.
+- Debits cannot push the balance below `-Limite`; credits are allowed unconditionally.
+- Invalid transaction fields return `422`.
 
 ## Resource constraints
 
@@ -31,7 +50,7 @@ The official stack budget is intentionally tight:
 
 ## Why this implementation is interesting
 
-The repository explores a compact Go approach: a small API surface, a simple NGINX fan-out, and PostgreSQL stored procedures for the hot transaction path. The goal is not to build a feature-complete banking system; it is to study performance trade-offs under a fixed resource envelope.
+The repository explores a compact Go approach: a small HTTP layer, a simple NGINX fan-out, and PostgreSQL stored procedures for the hot transaction path. The goal is not to build a feature-complete banking system; it is to study performance trade-offs under a fixed resource envelope.
 
 ## Source specification
 
