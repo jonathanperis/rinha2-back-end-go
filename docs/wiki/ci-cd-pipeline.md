@@ -2,28 +2,34 @@
 
 ## Workflows
 
-This repository uses four GitHub Actions workflows:
+The repository uses GitHub Actions for pull-request checks, main-branch releases, security scanning, and the GitHub Pages documentation deploy.
 
-### build-check.yml
+| Workflow | Trigger | Purpose |
+|----------|---------|---------|
+| `build-check.yml` | Pull requests | Build the Go application and run a Docker Compose health check before merge. |
+| `main-release.yml` | Push to `main` | Build and push multi-platform GHCR images, run container health checks, and execute k6 validation. |
+| `codeql.yml` | Push, pull request, weekly schedule | Run CodeQL security analysis for Go code. |
+| `deploy.yml` | Push to `main` | Build the Astro documentation site and deploy GitHub Pages. |
 
-- **Trigger:** Pull requests
-- **Steps:** Builds the Go application and runs a Docker Compose health check to verify the service starts correctly
-- **Purpose:** Catch build failures and regressions before merging
+## Release path
 
-### main-release.yml
+```text
+pull request
+  └─ build-check.yml
+       └─ merge to main
+            ├─ main-release.yml  -> GHCR image + k6 evidence
+            ├─ codeql.yml        -> security analysis
+            └─ deploy.yml        -> GitHub Pages documentation
+```
 
-- **Trigger:** Push to main branch
-- **Steps:** Builds the Go application, creates a multi-platform Docker image (amd64/arm64), pushes to GitHub Container Registry (GHCR), runs container health check, and executes k6 load tests
-- **Purpose:** Automated release of production-ready container images with stress test validation
+## Published artifacts
 
-### codeql.yml
+- Documentation: [jonathanperis.github.io/rinha2-back-end-go/docs/](https://jonathanperis.github.io/rinha2-back-end-go/docs/)
+- Stress reports: [jonathanperis.github.io/rinha2-back-end-go/reports/](https://jonathanperis.github.io/rinha2-back-end-go/reports/)
+- Container image: `ghcr.io/jonathanperis/rinha2-back-end-go:latest`
 
-- **Trigger:** Push to main, pull requests, and weekly schedule
-- **Steps:** Runs CodeQL security analysis on Go code
-- **Purpose:** Detect security vulnerabilities and code quality issues
+## Operator notes
 
-### deploy.yml
-
-- **Trigger:** Push to main branch
-- **Steps:** Deploys the `docs/` directory to GitHub Pages using the GitHub Actions deployment model
-- **Purpose:** Publish project documentation and landing page
+- PR checks protect the documentation and runtime from obvious regressions.
+- Main-branch workflows are the deployment path; the live docs update after the GitHub Pages workflow finishes.
+- Stress-test reports should be treated as run-specific evidence, not timeless proof of a single absolute ranking.
