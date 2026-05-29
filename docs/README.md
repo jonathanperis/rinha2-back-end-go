@@ -9,6 +9,7 @@ Astro static site for `rinha2-back-end-go`, deployed to GitHub Pages by `.github
 | `wiki/*.md` | Source Markdown for `/docs/` pages. |
 | `src/pages/docs/[...slug].astro` | Route-based docs renderer and sidebar/search wiring. |
 | `src/lib/sidebar.config.ts` | Ordered docs route list. Add new wiki pages here. |
+| `astro.config.mjs` | Astro 6.4 config, including Sätteri as the Markdown processor. |
 | `src/pages/reports/index.astro` | Builds the stress-report archive from `public/reports/*.html`. |
 | `public/reports/` | Committed k6 HTML reports copied into the final site. |
 | `out/` | Generated Astro build output; do not edit by hand. |
