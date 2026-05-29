@@ -60,6 +60,39 @@ curl -i -X POST http://localhost:9999/clientes/1/transacoes   -H "Content-Type: 
 | `/clientes/{id}/transacoes` | `POST` | JSON body with `valor`, `tipo`, and `descricao`. Returns `id`, `limite`, and updated `saldo`. |
 | `/clientes/{id}/extrato` | `GET` | Returns `saldo` metadata and up to 10 recent `ultimas_transacoes`; the current Go DTO serializes transaction `valor`, `tipo`, and `descricao`. |
 
+## Current response examples
+
+Transaction response:
+
+```json
+{
+  "id": 1,
+  "limite": 100000,
+  "saldo": 1000
+}
+```
+
+Statement response:
+
+```json
+{
+  "saldo": {
+    "total": 1000,
+    "limite": 100000,
+    "data_extrato": "2026-05-29T22:00:00Z"
+  },
+  "ultimas_transacoes": [
+    {
+      "valor": 1000,
+      "tipo": "c",
+      "descricao": "deposito"
+    }
+  ]
+}
+```
+
+For the full status-code matrix and source-backed edge cases, see [Source Audit](../audit/).
+
 ## Local Go build
 
 ```bash

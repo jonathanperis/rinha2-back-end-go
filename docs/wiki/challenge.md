@@ -9,9 +9,42 @@ Rinha de Backend is a Brazilian backend programming challenge. The 2024/Q1 editi
 | Endpoint | Method | Expected behavior | Current implementation note |
 |----------|--------|-------------------|-----------------------------|
 | `/clientes/{id}/transacoes` | `POST` | Submit a debit (`d`) or credit (`c`) transaction for clients 1 through 5. | Implemented in `postTransacaoHandler`; returns `id`, `limite`, and updated `saldo`. |
-| `/clientes/{id}/extrato` | `GET` | Return current balance, credit limit, statement timestamp, and recent transactions. | Implemented in `getExtratoHandler`; returns `saldo` and up to 10 `ultimas_transacoes`. |
+| `/clientes/{id}/extrato` | `GET` | Return current balance, credit limit, statement timestamp, and recent transactions. | Implemented in `getExtratoHandler`; returns `saldo` and up to 10 `ultimas_transacoes`. Current transaction rows serialize `valor`, `tipo`, and `descricao`; `RealizadoEm` is stored/selected in SQL but not exposed by the Go DTO. |
 
 The repository also exposes `GET /healthz` for compose/CI health checks; it is not part of the original banking contract.
+
+### Current response shapes
+
+`POST /clientes/{id}/transacoes` returns:
+
+```json
+{
+  "id": 1,
+  "limite": 100000,
+  "saldo": 1000
+}
+```
+
+`GET /clientes/{id}/extrato` returns:
+
+```json
+{
+  "saldo": {
+    "total": 1000,
+    "limite": 100000,
+    "data_extrato": "2026-05-29T22:00:00Z"
+  },
+  "ultimas_transacoes": [
+    {
+      "valor": 1000,
+      "tipo": "c",
+      "descricao": "deposito"
+    }
+  ]
+}
+```
+
+See [Source Audit](../audit/) for the complete status-code matrix and edge cases.
 
 ## Seeded clients
 
