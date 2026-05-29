@@ -65,7 +65,7 @@ Transaction validation in `main.go` currently requires:
 - `tipo` exactly `c` or `d`.
 - `descricao` non-empty and at most 10 characters.
 - `valor` greater than zero.
-- Debits are accepted by the stored procedure only when the resulting balance is not below `-Limite`; credits are always allowed.
+- Debits call `InsertTransacao`; an over-limit debit does not mutate the balance and currently returns the unchanged balance unless the database call itself fails.
 
 ## Getting started
 
@@ -121,6 +121,8 @@ Published image tags:
 ## Documentation
 
 The public docs are generated from `docs/wiki/*.md` via `docs/src/pages/docs/[...slug].astro`. The route set is defined in `docs/src/lib/sidebar.config.ts`, and the stress report index reads committed HTML reports from `docs/public/reports/`.
+
+The [Source Audit](https://jonathanperis.github.io/rinha2-back-end-go/docs/audit/) page tracks repo-vs-docs details that are easy to miss, including current over-limit debit behavior, statement transaction fields, dev/prod compose differences, and PR path-filter boundaries.
 
 ## License
 

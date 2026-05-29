@@ -37,7 +37,7 @@ Read the statement:
 curl -sS http://localhost:9999/clientes/1/extrato
 ```
 
-Try an invalid debit to confirm validation still rejects overdrafts beyond the credit limit:
+Try an over-limit debit to confirm the current database behavior: the stored procedure refuses the balance mutation and returns the existing balance. This is documented as current behavior on the source-audit page rather than as a strict `422` validation response.
 
 ```bash
 curl -i -X POST http://localhost:9999/clientes/1/transacoes   -H "Content-Type: application/json"   -d '{"valor": 999999999, "tipo": "d", "descricao": "limite"}'
@@ -58,7 +58,7 @@ curl -i -X POST http://localhost:9999/clientes/1/transacoes   -H "Content-Type: 
 |----------|--------|--------------------|
 | `/healthz` | `GET` | Returns `Healthy`; used by compose/CI health checks. |
 | `/clientes/{id}/transacoes` | `POST` | JSON body with `valor`, `tipo`, and `descricao`. Returns `id`, `limite`, and updated `saldo`. |
-| `/clientes/{id}/extrato` | `GET` | Returns `saldo` metadata and up to 10 recent `ultimas_transacoes`. |
+| `/clientes/{id}/extrato` | `GET` | Returns `saldo` metadata and up to 10 recent `ultimas_transacoes`; the current Go DTO serializes transaction `valor`, `tipo`, and `descricao`. |
 
 ## Local Go build
 

@@ -36,6 +36,11 @@ Operator notes for the Go 1.25.0 Rinha de Backend 2024/Q1 implementation. These 
     <a href="performance/">Review benchmark evidence</a>
     <p>Resource envelope, report archive, and the limits of historical benchmark claims.</p>
   </div>
+  <div class="doc-card">
+    <span>05 · source audit</span>
+    <a href="audit/">Check implementation/documentation edges</a>
+    <p>Over-limit debit behavior, statement fields, compose differences, and path-filter boundaries.</p>
+  </div>
 </div>
 
 ## Implementation snapshot

@@ -32,7 +32,7 @@ pull request
 
 ## Operator notes
 
-- PR checks are path-filtered: docs-only changes may not run runtime Docker checks, but Pages still builds on `main` after merge.
+- `build-check.yml` and CodeQL are path-filtered on pull requests. The current runtime health gate watches source/root-compose paths, while `prod/**` changes are exercised by the `main-release.yml` path after merge.
 - Main-branch workflows are the deployment path; the live docs update after `deploy.yml` finishes.
 - Stress-test reports should be treated as run-specific evidence, not timeless proof of a single absolute ranking.
 - The production compose file reads SQL/NGINX config from `prod/conf/`; the development compose file reads from the repository root.
