@@ -35,7 +35,7 @@ Current validation is split between Go and PostgreSQL:
 - `tipo` must be exactly debit (`d`) or credit (`c`).
 - `descricao` must be non-empty and at most 10 characters.
 - `valor` must be greater than zero.
-- Debits cannot push the balance below `-Limite`; credits are allowed unconditionally.
+- Debits cannot push the balance below `-Limite`; the current stored procedure refuses the mutation and returns the existing balance, so the Go handler responds with the unchanged balance unless the database call itself fails.
 - Invalid transaction fields return `422`.
 
 ## Resource constraints
